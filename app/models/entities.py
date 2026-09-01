@@ -1,0 +1,211 @@
+from sqlalchemy import Column, Integer, String, Float, Boolean, Date, DateTime, ForeignKey, Text, Enum
+from sqlalchemy.orm import relationship
+from datetime import datetime, date
+import enum
+from app.core.database import Base
+
+class StoreType(str, enum.Enum):
+    CENTRAL_WAREHOUSE = "CENTRAL_WAREHOUSE"
+    STORE = "STORE"
+
+class CampaignType(str, enum.Enum):
+    PERCENT_DISCOUNT = "PERCENT_DISCOUNT"      # % İndirim
+    BUY_X_PAY_Y = "BUY_X_PAY_Y"                # 3 Al 2 Öde
+    SECOND_DISCOUNT = "SECOND_DISCOUNT"        # 2. Ürüne %50
+    BASKET_DISCOUNT = "BASKET_DISCOUNT"        # Sepette İndirim
+
+class CampaignStatus(str, enum.Enum):
+    PLANNED = "PLANNED"
+    ACTIVE = "ACTIVE"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
+class POStatus(str, enum.Enum):
+    DRAFT = "DRAFT"
+    APPROVED = "APPROVED"
+    SENT = "SENT"
+    PARTIAL_RECEIVED = "PARTIAL_RECEIVED"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, index=True, nullable=False)
+    role = Column(String(50), default="SATIN_ALMACI") # ADMIN, PATRON, SATIN_ALMACI, MAGAZA_MUDURU, DEPO_SORUMLUSU
+    category_focus = Column(String(200), nullable=True) # Örn: "Temel Gıda, Şarküteri"
+    monthly_budget_limit = Column(Float, default=500000.0) # Aylık stok bağlama bütçe limiti (TL)
+
+    products = relationship("Product", back_populates="buyer")
+    purchase_orders = relationship("PurchaseOrder", back_populates="buyer")
+
+class Supplier(Base):
+    __tablename__ = "suppliers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(150), nullable=False, unique=True)
+    code = Column(String(50), unique=True, index=True)
+    payment_term_days = Column(Integer, default=45) # Ödeme vadesi (gün)
+    lead_time_days = Column(Integer, default=3)      # Sipariş teslim süresi (gün)
+    target_days_of_inventory = Column(Integer, default=21) # Hedef Yeter Gün Sayısı (gün)
+    contact_name = Column(String(100), nullable=True)
+    phone = Column(String(50), nullable=True)
+    min_order_amount = Column(Float, default=5000.0) # Minimum sipariş tutarı (TL)
+
+    products = relationship("Product", back_populates="supplier")
+    purchase_orders = relationship("PurchaseOrder", back_populates="supplier")
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    code = Column(String(50), unique=True, index=True)
+    parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    target_margin_pct = Column(Float, default=25.0)     # Hedef Kâr Marjı %
+    target_turnover_days = Column(Integer, default=21)  # Hedef Stok Devir Süresi (gün)
+
+    products = relationship("Product", back_populates="category")
+
+class Product(Base):
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True, index=True)
+    barcode = Column(String(50), unique=True, index=True, nullable=False)
+    name = Column(String(200), nullable=False, index=True)
+    brand = Column(String(100), index=True, nullable=True) # Marka (Örn: Bingo, Papia, Familia, Molfix, Fairy, Ariel)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+    supplier_id = Column(Integer, ForeignKey("suppliers.id"), nullable=False)
+    buyer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    
+    unit = Column(String(20), default="Adet")          # Adet, KG, Koli, Paket
+    purchase_price = Column(Float, nullable=False)     # Alış Fiyatı (KDV Hariç)
+    sale_price = Column(Float, nullable=False)         # Satış Fiyatı (KDV Dahil)
+    vat_rate = Column(Float, default=0.10)             # KDV Oranı (0.01, 0.10, 0.20)
+    shelf_life_days = Column(Integer, default=180)     # Raf Ömrü (gün)
+    safety_stock_days = Column(Integer, default=7)     # Emniyet Stoğu (gün)
+
+    category = relationship("Category", back_populates="products")
+    supplier = relationship("Supplier", back_populates="products")
+    buyer = relationship("User", back_populates="products")
+    inventory_items = relationship("Inventory", back_populates="product")
+    sales_records = relationship("SalesHistory", back_populates="product")
+    campaign_products = relationship("CampaignProduct", back_populates="product")
+    po_items = relationship("PurchaseOrderItem", back_populates="product")
+
+class Store(Base):
+    __tablename__ = "stores"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    code = Column(String(50), unique=True, index=True)
+    type = Column(String(50), default=StoreType.STORE.value) # CENTRAL_WAREHOUSE veya STORE
+    city = Column(String(50), default="İstanbul")
+    district = Column(String(50), nullable=True)
+    sqm_area = Column(Float, default=250.0) # Metrekare
+
+    inventory_items = relationship("Inventory", back_populates="store")
+    sales_records = relationship("SalesHistory", back_populates="store")
+
+class Inventory(Base):
+    __tablename__ = "inventory"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    store_id = Column(Integer, ForeignKey("stores.id"), nullable=False)
+    quantity_on_hand = Column(Float, default=0.0)    # Rafta / Depoda fiziki stok
+    quantity_reserved = Column(Float, default=0.0)   # Rezerve stok
+    quantity_on_order = Column(Float, default=0.0)    # Tedarikçiden yoldaki sipariş
+    last_counted_at = Column(DateTime, default=datetime.utcnow)
+
+    product = relationship("Product", back_populates="inventory_items")
+    store = relationship("Store", back_populates="inventory_items")
+
+class SalesHistory(Base):
+    __tablename__ = "sales_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    store_id = Column(Integer, ForeignKey("stores.id"), nullable=False)
+    sale_date = Column(Date, nullable=False, index=True)
+    quantity_sold = Column(Float, default=0.0)
+    gross_revenue = Column(Float, default=0.0) # Brüt Satış Tutarı (TL)
+    cogs = Column(Float, default=0.0)          # Satılan Malın Maliyeti (TL)
+    was_on_campaign = Column(Boolean, default=False)
+    campaign_id = Column(Integer, ForeignKey("campaigns.id"), nullable=True)
+
+    product = relationship("Product", back_populates="sales_records")
+    store = relationship("Store", back_populates="sales_records")
+    campaign = relationship("Campaign", back_populates="sales_records")
+
+class Campaign(Base):
+    __tablename__ = "campaigns"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(150), nullable=False)
+    start_date = Column(Date, nullable=False, index=True)
+    end_date = Column(Date, nullable=False, index=True)
+    campaign_type = Column(String(50), default=CampaignType.PERCENT_DISCOUNT.value)
+    discount_rate = Column(Float, default=0.15) # %15 indirim
+    application_channel = Column(String(50), default="DİREKT_RAF") # DİREKT_RAF, DİJİTAL_KART, HER_İKİSİ
+    status = Column(String(50), default=CampaignStatus.PLANNED.value)
+    
+    target_sales_qty = Column(Float, default=0.0)
+    target_revenue = Column(Float, default=0.0)
+    actual_sales_qty = Column(Float, default=0.0)
+    actual_revenue = Column(Float, default=0.0)
+    created_from_po_id = Column(Integer, ForeignKey("purchase_orders.id"), nullable=True)
+    notes = Column(Text, nullable=True)
+
+    campaign_products = relationship("CampaignProduct", back_populates="campaign", cascade="all, delete-orphan")
+    sales_records = relationship("SalesHistory", back_populates="campaign")
+    created_from_po = relationship("PurchaseOrder", back_populates="linked_campaigns")
+
+class CampaignProduct(Base):
+    __tablename__ = "campaign_products"
+
+    id = Column(Integer, primary_key=True, index=True)
+    campaign_id = Column(Integer, ForeignKey("campaigns.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    regular_shelf_price = Column(Float, nullable=True) # Normal Raf Satış Fiyatı (TL)
+    promotional_price = Column(Float, nullable=True)   # Aktivite / Kampanya Satış Fiyatı (TL)
+    discount_rate = Column(Float, default=0.15)
+    target_sales_qty = Column(Float, default=0.0)      # Bu ürün için hedeflenen aktivite satış adedi
+    application_channel = Column(String(50), default="DİREKT_RAF") # DİREKT_RAF, DİJİTAL_KART, HER_İKİSİ
+
+    campaign = relationship("Campaign", back_populates="campaign_products")
+    product = relationship("Product", back_populates="campaign_products")
+
+class PurchaseOrder(Base):
+    __tablename__ = "purchase_orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    po_number = Column(String(50), unique=True, index=True, nullable=False)
+    supplier_id = Column(Integer, ForeignKey("suppliers.id"), nullable=False)
+    buyer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    order_date = Column(Date, default=date.today)
+    expected_delivery_date = Column(Date, nullable=True)
+    status = Column(String(50), default=POStatus.DRAFT.value)
+    total_cost = Column(Float, default=0.0)
+    notes = Column(Text, nullable=True)
+
+    supplier = relationship("Supplier", back_populates="purchase_orders")
+    buyer = relationship("User", back_populates="purchase_orders")
+    items = relationship("PurchaseOrderItem", back_populates="purchase_order", cascade="all, delete-orphan")
+    linked_campaigns = relationship("Campaign", back_populates="created_from_po")
+
+class PurchaseOrderItem(Base):
+    __tablename__ = "purchase_order_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    po_id = Column(Integer, ForeignKey("purchase_orders.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    suggested_quantity = Column(Float, default=0.0) # AI / Algoritma önerisi
+    ordered_quantity = Column(Float, default=0.0)   # Kesinleşen sipariş
+    unit_cost = Column(Float, nullable=False)
+    planned_campaign_id = Column(Integer, ForeignKey("campaigns.id"), nullable=True)
+
+    purchase_order = relationship("PurchaseOrder", back_populates="items")
+    product = relationship("Product", back_populates="po_items")
