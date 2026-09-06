@@ -10,6 +10,9 @@ from app.api.v1.analytics import router as analytics_router
 from app.api.v1.campaigns import router as campaigns_router
 from app.api.v1.master import router as master_router
 from app.api.v1.stores import router as stores_router
+from app.api.v1.crm import router as crm_router
+from app.api.v1.academy import router as academy_router
+from app.api.v1.triggers import router as triggers_router
 
 # Tabloları oluştur
 Base.metadata.create_all(bind=engine)
@@ -21,7 +24,7 @@ with SessionLocal() as db_session:
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="Yerel Market Zincirleri için Akıllı Satın Alma, Tedarikçi Analitiği, Stok Yükü ve Kampanya Yönetim API'si",
+    description="marketyönetimi360 - Yerel Market Zincirleri için Uçtan Uca Perakende İşletim Sistemi, CRM, Akademi ve Tetikleyici API'si",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -42,6 +45,9 @@ app.include_router(analytics_router, prefix=settings.API_V1_STR)
 app.include_router(campaigns_router, prefix=settings.API_V1_STR)
 app.include_router(master_router, prefix=settings.API_V1_STR)
 app.include_router(stores_router, prefix=settings.API_V1_STR)
+app.include_router(crm_router, prefix=settings.API_V1_STR)
+app.include_router(academy_router, prefix=settings.API_V1_STR)
+app.include_router(triggers_router, prefix=settings.API_V1_STR)
 
 @app.get("/", response_class=HTMLResponse)
 @app.get("/dashboard", response_class=HTMLResponse)

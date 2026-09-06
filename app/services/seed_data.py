@@ -4,11 +4,23 @@ from sqlalchemy.orm import Session
 from app.models.entities import (
     User, Supplier, Category, Product, Store, Inventory,
     SalesHistory, Campaign, CampaignProduct, PurchaseOrder, PurchaseOrderItem,
-    StoreType, CampaignType, CampaignStatus, POStatus
+    StoreType, CampaignType, CampaignStatus, POStatus,
+    Employee, EmployeeCompetency, TrainingAssignment, CertificationLog,
+    CRMEventLog, CRMCampaignFeedback, TriggerEventLog, ActionCard,
+    ActionCardStatus, ActionCardPriority
 )
+from datetime import datetime
 
 def seed_database(db: Session):
     # Temiz tohumlama için mevcut verileri temizle
+    db.query(ActionCard).delete()
+    db.query(EmployeeCompetency).delete()
+    db.query(TrainingAssignment).delete()
+    db.query(CertificationLog).delete()
+    db.query(CRMEventLog).delete()
+    db.query(CRMCampaignFeedback).delete()
+    db.query(TriggerEventLog).delete()
+    db.query(Employee).delete()
     db.query(SalesHistory).delete()
     db.query(CampaignProduct).delete()
     db.query(Campaign).delete()
@@ -362,8 +374,8 @@ def seed_database(db: Session):
     po_seeds = [
         # (PO_No, Tedarikçi, Satın Almacı, Sipariş Tarihi, Teslim Tarihi, Durum, Not, [(ÜrünIndex, Adet)])
         ("PO-2026-0710", "Sütaş Süt Ürünleri A.Ş.", buyer_ahmet, date(2026, 7, 25), date(2026, 7, 27), "COMPLETED", "Temmuz sonu peynir ve tereyağı partisi (Vadesi 6 gün geçti)", [(7, 800), (8, 600)]),
-        ("PO-2026-0720", "Ülker Bisküvi Sanayi A.Ş.", buyer_mehmet, date(2026, 7, 15), date(2026, 7, 18), "COMPLETED", "Temmuz ortası bisküvi ve çikolata ikmali (Vadesi Bugün)", [(2, 2000), (3, 3000)]),
-        ("PO-2026-0725", "Nestlé Türkiye", buyer_mehmet, date(2026, 7, 20), date(2026, 7, 23), "COMPLETED", "Nescafe ve Nesquik partisi (Vadeye 5 Gün)", [(29, 1200), (30, 900)]),
+        ("PO-2026-0720", "Ülker Bisküvi (Pladis)", buyer_mehmet, date(2026, 7, 15), date(2026, 7, 18), "COMPLETED", "Temmuz ortası bisküvi ve çikolata ikmali (Vadesi Bugün)", [(2, 2000), (3, 3000)]),
+        ("PO-2026-0725", "Eti Gıda San. A.Ş.", buyer_mehmet, date(2026, 7, 20), date(2026, 7, 23), "COMPLETED", "Bisküvi ve atıştırmalık partisi (Vadeye 5 Gün)", [(0, 1200), (1, 900)]),
         ("PO-2026-0808", "Coca-Cola İçecek A.Ş.", buyer_mehmet, date(2026, 8, 10), date(2026, 8, 12), "COMPLETED", "Meşrubat ve soğuk çay ana ikmali (Vadeye 10 Gün)", [(31, 3000), (32, 2000)]),
         ("PO-2026-0802", "Sütaş Süt Ürünleri A.Ş.", buyer_ahmet, date(2026, 8, 18), date(2026, 8, 20), "COMPLETED", "Süt ve kahvaltılık haftalık rutin ikmali (Vadeye 18 Gün)", [(5, 3000), (6, 1500), (7, 500), (8, 800)]),
         ("PO-2026-0801", "Hayat Kimya A.Ş.", buyer_zeynep, date(2026, 8, 10), date(2026, 8, 13), "COMPLETED", "Ağustos başı hijyen ve kağıt ikmali (Vadeye 26 Gün)", [(20, 1500), (22, 1200), (24, 800), (26, 600)]),
@@ -405,6 +417,59 @@ def seed_database(db: Session):
                 ))
 
         po_obj.total_cost = round(po_tot, 2)
+
+    # 9. Çalışanlar & Akademi Yetkinlikleri (Örnek Şube Kadroları)
+    sample_employees = [
+        Employee(employee_code="EMP_90124", full_name="Ahmet Yılmaz", store_id=stores[1].id, department="MEAT_AND_BUTCHERY", job_title="Reyon Kasap Sorumlusu"),
+        Employee(employee_code="EMP_90125", full_name="Selin Aktaş", store_id=stores[1].id, department="CASH_DESK", job_title="Kasa Şefi"),
+        Employee(employee_code="EMP_90126", full_name="Burak Demir", store_id=stores[2].id, department="FRUIT_VEG", job_title="Taze Meyve-Sebze Uzmanı"),
+        Employee(employee_code="EMP_90127", full_name="Merve Can", store_id=stores[3].id, department="BAKERY", job_title="Fırın & Unlu Mamul Sorumlusu"),
+        Employee(employee_code="EMP_90128", full_name="Murat Kaya", store_id=stores[4].id, department="MEAT_AND_BUTCHERY", job_title="Kasap Elemanı"),
+    ]
+    db.add_all(sample_employees)
+    db.flush()
+
+    sample_competencies = [
+        EmployeeCompetency(employee_id=sample_employees[0].id, competency_code="MEAT_YIELD_MANAGEMENT", competency_name="Karkas Et Parçalama ve Randıman", score=72.0, operational_level="INTERMEDIATE"),
+        EmployeeCompetency(employee_id=sample_employees[0].id, competency_code="HYGIENE_HACCP", competency_name="Gıda Güvenliği & Soğuk Zincir", score=88.0, operational_level="SENIOR"),
+        EmployeeCompetency(employee_id=sample_employees[1].id, competency_code="CASHIER_SPEED", competency_name="Kasa Hızı & Barkod Ergonomisi", score=92.0, operational_level="MASTER"),
+        EmployeeCompetency(employee_id=sample_employees[2].id, competency_code="FRESH_WASTE_MANAGEMENT", competency_name="Meyve-Sebze Fire ve Tasfiye Yönetimi", score=65.0, operational_level="NOVICE"),
+        EmployeeCompetency(employee_id=sample_employees[3].id, competency_code="BAKERY_RECIPE_PLANNING", competency_name="Pişirme Reçetesi & Bayat Ekmek Kontrolü", score=78.0, operational_level="INTERMEDIATE"),
+    ]
+    db.add_all(sample_competencies)
+
+    # 10. Örnek Başlangıç Aksiyon Kartları (Yönetici Kokpiti İçin)
+    initial_actions = [
+        ActionCard(
+            card_code="ACT_INIT_001",
+            source_module="SALES_LOSS",
+            title="Süt Ürünleri Cirosunda %7 Düşüş (5 Şube)",
+            description="Son 4 haftada süt grubunda ciro kaybı yaşandı. 14 kritik SKU'da bulunurluk kaybı tespit edildi.",
+            root_cause="Depo-şube sevkiyat parametrelerinin güncellenmemesi ve güvenlik stoğu yetersizliği",
+            financial_impact_try=820000.0,
+            assigned_to="Ahmet Kılıç (Satın Alma / İkmal)",
+            approver="Ticari Direktör",
+            priority=ActionCardPriority.CRITICAL.value,
+            status=ActionCardStatus.OPEN.value,
+            deadline_date=date(2026, 9, 8),
+            created_at=datetime.utcnow()
+        ),
+        ActionCard(
+            card_code="ACT_INIT_002",
+            source_module="AUDIT_FAIL",
+            title="Şişli Şube Kasa-Raf Fiyat Uyuşmazlığı",
+            description="Haftalık denetimde 6 temel gıda ürününde raf etiketi ile kasa fiyatı arasında fark saptandı.",
+            root_cause="Yeni fiyat etiketlerinin akşam vardiyasında basılmaması",
+            financial_impact_try=15000.0,
+            assigned_to="Şişli Mağaza Müdürü",
+            approver="Bölge Müdürü",
+            priority=ActionCardPriority.HIGH.value,
+            status=ActionCardStatus.IN_PROGRESS.value,
+            deadline_date=date(2026, 9, 4),
+            created_at=datetime.utcnow()
+        )
+    ]
+    db.add_all(initial_actions)
 
     db.commit()
     print("Veritabanı zengin tohumlama başarıyla tamamlandı.")

@@ -570,6 +570,7 @@ class CategoryPerformanceItem(BaseModel):
     stock_share_pct: float = 0.0
     gmroi_ratio: float
     revenue_share_pct: float
+    days_of_inventory: float = 0.0
 
 class ExecutiveTopRiskItem(BaseModel):
     product_id: int
@@ -716,6 +717,48 @@ class ExecutiveDashboardSummary(BaseModel):
     total_active_campaigns_count: int
     total_campaign_revenue: float
     
+    # 🆕 Patron Kokpiti (Executive Metrics)
+    prior_year_revenue: float = 0.0
+    prior_year_qty: float = 0.0
+    current_year_qty: float = 0.0
+    revenue_growth_nominal_pct: float = 0.0
+    qty_growth_pct: float = 0.0
+    food_inflation_rate_pct: float = 36.4
+    real_growth_pct: float = 0.0
+    sector_growth_rate_pct: float = 38.2
+    market_share_diff_pct: float = 0.0
+    
+    total_staff_count: int = 84
+    revenue_per_staff: float = 0.0
+    prior_revenue_per_staff: float = 0.0
+    revenue_per_sqm: float = 0.0
+    total_sales_area_sqm: float = 2450.0
+    
+    total_customer_count: int = 0
+    prior_customer_count: int = 0
+    avg_basket_amount: float = 0.0
+    prior_avg_basket_amount: float = 0.0
+    avg_basket_items_count: float = 5.2
+    
+    target_gross_profit: float = 0.0
+    target_margin_pct: float = 28.0
+    gross_profit_variance_try: float = 0.0
+    target_network_ygs: float = 14.0
+    excess_inventory_cost: float = 0.0
+    
+    ygs_category_comparison: List[Dict[str, Any]] = []
+    gmroi_by_buyer: List[Dict[str, Any]] = []
+    gmroi_by_category: List[Dict[str, Any]] = []
+    gmroi_by_supplier: List[Dict[str, Any]] = []
+    space_to_sales_categories: List[Dict[str, Any]] = []
+    executive_ai_insights: List[Dict[str, Any]] = []
+    
+    # 🆕 Karşılaştırmalı Performans Matrisleri
+    stores_comparison: List[Dict[str, Any]] = []
+    categories_comparison: List[Dict[str, Any]] = []
+    suppliers_comparison: List[Dict[str, Any]] = []
+    buyers_comparison: List[Dict[str, Any]] = []
+    
     stores_performance: List[StorePerformanceItem]
     categories_performance: List[CategoryPerformanceItem]
     buyers_performance: List[BuyerPerformanceItem] = []
@@ -726,3 +769,200 @@ class ExecutiveDashboardSummary(BaseModel):
     dead_stock_by_supplier: List[ExecutiveSupplierRiskGroup] = []
     top_urgent_payments: List[ExecutiveUrgentPaymentItem]
     top_star_suppliers: List[ExecutiveStarSupplierItem]
+
+# --- Action Cards & Trigger Schemas ---
+
+class ActionCardCreate(BaseModel):
+    source_module: str
+    title: str
+    description: Optional[str] = None
+    root_cause: Optional[str] = None
+    financial_impact_try: float = 0.0
+    assigned_to: Optional[str] = None
+    approver: Optional[str] = None
+    priority: str = "MEDIUM"
+    deadline_date: Optional[date] = None
+
+class ActionCardResolveRequest(BaseModel):
+    resolution_evidence: str
+    actual_recovered_try: float = 0.0
+
+class ActionCardOut(BaseModel):
+    id: int
+    card_code: str
+    source_module: str
+    title: str
+    description: Optional[str] = None
+    root_cause: Optional[str] = None
+    financial_impact_try: float
+    actual_recovered_try: float
+    assigned_to: Optional[str] = None
+    approver: Optional[str] = None
+    priority: str
+    status: str
+    deadline_date: Optional[date] = None
+    resolution_evidence: Optional[str] = None
+    created_at: datetime
+    resolved_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+# --- XPlusCRM Integration Schemas ---
+
+class StoreLocationDto(BaseModel):
+    latitude: float
+    longitude: float
+    target_radius_km: float = 5.0
+
+class CRMOverstockLiquidationPayload(BaseModel):
+    event_id: str
+    event_type: str = "INVENTORY_OVERSTOCK_ALERT"
+    timestamp: datetime
+    store_id: str
+    store_location: Optional[StoreLocationDto] = None
+    sku: str
+    product_name: str
+    category_code: str
+    excess_stock_units: float
+    current_shelf_price: float
+    max_allowed_discount_pct: float
+    suggested_promo_price: float
+    target_customer_count: int
+    campaign_deadline: Optional[datetime] = None
+
+class CRMCampaignFeedbackPayload(BaseModel):
+    campaign_id: str
+    origin_event_id: Optional[str] = None
+    targeted_customers: int = 0
+    messages_delivered: int = 0
+    coupons_redeemed_in_store: int = 0
+    conversion_rate_pct: float = 0.0
+    total_revenue_generated_try: float = 0.0
+    units_sold: int = 0
+    remaining_excess_units: int = 0
+    incremental_basket_revenue_try: float = 0.0
+    dominant_segment: Optional[str] = None
+    avg_total_basket_value_try: float = 0.0
+    churn_prevented_customer_count: int = 0
+
+class CRMSimulationRequest(BaseModel):
+    store_id: int
+    product_id: int
+    max_discount_pct: float = 20.0
+
+class CRMSimulationResponse(BaseModel):
+    product_id: int
+    product_name: str
+    store_id: int
+    store_name: str
+    excess_stock_qty: float
+    current_sale_price: float
+    suggested_promo_price: float
+    discount_pct: float
+    estimated_target_customers: int
+    estimated_conversion_rate_pct: float
+    estimated_revenue_try: float
+    estimated_basket_lift_try: float
+    estimated_liquidation_days: int
+
+class CRMCampaignInsightItem(BaseModel):
+    id: int
+    campaign_id: str
+    origin_event_id: Optional[str] = None
+    targeted_customers: int
+    coupons_redeemed: int
+    conversion_rate_pct: float
+    total_revenue_try: float
+    units_sold: int
+    incremental_basket_revenue_try: float
+    dominant_segment: Optional[str] = None
+    avg_total_basket_value_try: float
+    churn_prevented_customer_count: int
+    received_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# --- Perakende Kariyer Akademisi (HR Skills) Integration Schemas ---
+
+class SkillDeltaDto(BaseModel):
+    competency_area: str
+    previous_score: float
+    new_score: float
+    unlocked_operational_role: Optional[str] = None
+
+class SkillVerificationPayload(BaseModel):
+    certification_event_id: str
+    employee_code: str
+    course_code: str
+    course_name: str
+    completion_date: Optional[datetime] = None
+    exam_score: float
+    passed: bool = True
+    certificate_qr_url: Optional[str] = None
+    skill_delta: Optional[SkillDeltaDto] = None
+
+class TrainingAssignmentRequest(BaseModel):
+    employee_id: int
+    store_id: int
+    trigger_reason: str
+    course_code: str
+    course_name: str
+    deadline_days: int = 5
+    is_mandatory: bool = True
+    baseline_kpi_value: float = 0.0
+    target_kpi_value: float = 0.0
+    financial_impact_try: float = 0.0
+
+class EmployeeCompetencyOut(BaseModel):
+    id: int
+    competency_code: str
+    competency_name: str
+    score: float
+    operational_level: str
+    last_evaluated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class EmployeeSkillMatrixItem(BaseModel):
+    employee_id: int
+    employee_code: str
+    full_name: str
+    store_id: int
+    store_name: str
+    department: str
+    job_title: str
+    is_active: bool
+    competencies: List[EmployeeCompetencyOut] = []
+    active_training_count: int = 0
+    certified_count: int = 0
+
+class TrainingImpactResponse(BaseModel):
+    training_id: int
+    event_id: str
+    employee_name: str
+    job_title: str
+    store_name: str
+    course_name: str
+    status: str
+    trigger_reason: str
+    baseline_kpi_value: float
+    target_kpi_value: float
+    post_training_kpi_value: Optional[float] = None
+    kpi_improvement_pct: float = 0.0
+    financial_impact_try: float = 0.0
+    financial_saved_try: float = 0.0
+    is_goal_achieved: bool = False
+
+# --- Trigger Engine Audit Schemas ---
+
+class TriggerAuditRunResponse(BaseModel):
+    audit_timestamp: datetime
+    anomalies_detected_count: int
+    action_cards_created_count: int
+    crm_events_dispatched_count: int
+    training_assignments_created_count: int
+    summary_messages: List[str] = []
+

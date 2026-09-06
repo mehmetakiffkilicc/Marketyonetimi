@@ -209,3 +209,150 @@ class PurchaseOrderItem(Base):
 
     purchase_order = relationship("PurchaseOrder", back_populates="items")
     product = relationship("Product", back_populates="po_items")
+
+class ActionCardStatus(str, enum.Enum):
+    OPEN = "OPEN"
+    IN_PROGRESS = "IN_PROGRESS"
+    RESOLVED = "RESOLVED"
+    VERIFIED = "VERIFIED"
+    CANCELLED = "CANCELLED"
+
+class ActionCardPriority(str, enum.Enum):
+    CRITICAL = "CRITICAL"
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+
+class ActionCard(Base):
+    __tablename__ = "action_cards"
+
+    id = Column(Integer, primary_key=True, index=True)
+    card_code = Column(String(50), unique=True, index=True, nullable=False)
+    source_module = Column(String(50), nullable=False) # SALES_LOSS, STOCKOUT, FRESH_WASTE, AUDIT_FAIL, EXCESS_STOCK
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    root_cause = Column(Text, nullable=True)
+    financial_impact_try = Column(Float, default=0.0)
+    actual_recovered_try = Column(Float, default=0.0)
+    assigned_to = Column(String(100), nullable=True)
+    approver = Column(String(100), nullable=True)
+    priority = Column(String(20), default=ActionCardPriority.MEDIUM.value)
+    status = Column(String(20), default=ActionCardStatus.OPEN.value)
+    deadline_date = Column(Date, nullable=True)
+    resolution_evidence = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    resolved_at = Column(DateTime, nullable=True)
+
+class Employee(Base):
+    __tablename__ = "employees"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_code = Column(String(50), unique=True, index=True, nullable=False)
+    full_name = Column(String(120), nullable=False)
+    store_id = Column(Integer, ForeignKey("stores.id"), nullable=False)
+    department = Column(String(50), default="RETAIL_OPERATIONS") # MEAT_AND_BUTCHERY, BAKERY, CASH_DESK, FRUIT_VEG
+    job_title = Column(String(100), nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    store = relationship("Store")
+    competencies = relationship("EmployeeCompetency", back_populates="employee", cascade="all, delete-orphan")
+    training_assignments = relationship("TrainingAssignment", back_populates="employee", cascade="all, delete-orphan")
+    certifications = relationship("CertificationLog", back_populates="employee", cascade="all, delete-orphan")
+
+class EmployeeCompetency(Base):
+    __tablename__ = "employee_competencies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    competency_code = Column(String(50), nullable=False) # MEAT_YIELD_MANAGEMENT, HYGIENE_HACCP, CASHIER_SPEED
+    competency_name = Column(String(150), nullable=False)
+    score = Column(Float, default=50.0) # 0 - 100
+    operational_level = Column(String(50), default="INTERMEDIATE") # NOVICE, INTERMEDIATE, SENIOR_BUTCHER, MASTER
+    last_evaluated_at = Column(DateTime, default=datetime.utcnow)
+
+    employee = relationship("Employee", back_populates="competencies")
+
+class TrainingAssignment(Base):
+    __tablename__ = "training_assignments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String(50), unique=True, index=True, nullable=False)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    store_id = Column(Integer, ForeignKey("stores.id"), nullable=False)
+    trigger_reason = Column(String(100), nullable=False) # CARCASS_YIELD_DEFICIT, HIGH_WASTE_ANOMALY, HYGIENE_AUDIT_FAIL
+    course_code = Column(String(50), nullable=False)
+    course_name = Column(String(200), nullable=False)
+    deadline_days = Column(Integer, default=5)
+    is_mandatory = Column(Boolean, default=True)
+    status = Column(String(30), default="ASSIGNED") # ASSIGNED, IN_PROGRESS, COMPLETED, OVERDUE
+    baseline_kpi_value = Column(Float, default=0.0)
+    target_kpi_value = Column(Float, default=0.0)
+    post_training_kpi_value = Column(Float, nullable=True)
+    financial_impact_try = Column(Float, default=0.0)
+    assigned_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
+
+    employee = relationship("Employee", back_populates="training_assignments")
+    store = relationship("Store")
+
+class CertificationLog(Base):
+    __tablename__ = "certification_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    certificate_event_id = Column(String(50), unique=True, index=True, nullable=False)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    course_code = Column(String(50), nullable=False)
+    course_name = Column(String(200), nullable=False)
+    exam_score = Column(Float, nullable=False)
+    passed = Column(Boolean, default=True)
+    certificate_qr_url = Column(Text, nullable=True)
+    issued_at = Column(DateTime, default=datetime.utcnow)
+
+    employee = relationship("Employee", back_populates="certifications")
+
+class CRMEventLog(Base):
+    __tablename__ = "crm_event_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String(50), unique=True, index=True, nullable=False)
+    event_type = Column(String(50), nullable=False) # INVENTORY_OVERSTOCK_ALERT, CATEGORY_CHURN_DETECTED
+    store_id = Column(Integer, ForeignKey("stores.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    payload_json = Column(Text, nullable=False)
+    status = Column(String(30), default="DISPATCHED") # DISPATCHED, PROCESSED, FAILED
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    store = relationship("Store")
+    product = relationship("Product")
+
+class CRMCampaignFeedback(Base):
+    __tablename__ = "crm_campaign_feedbacks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    campaign_id = Column(String(100), index=True, nullable=False)
+    origin_event_id = Column(String(50), nullable=True)
+    targeted_customers = Column(Integer, default=0)
+    messages_delivered = Column(Integer, default=0)
+    coupons_redeemed = Column(Integer, default=0)
+    conversion_rate_pct = Column(Float, default=0.0)
+    total_revenue_generated_try = Column(Float, default=0.0)
+    units_sold = Column(Integer, default=0)
+    remaining_excess_units = Column(Integer, default=0)
+    incremental_basket_revenue_try = Column(Float, default=0.0)
+    dominant_segment = Column(String(100), nullable=True)
+    avg_total_basket_value_try = Column(Float, default=0.0)
+    churn_prevented_customer_count = Column(Integer, default=0)
+    received_at = Column(DateTime, default=datetime.utcnow)
+
+class TriggerEventLog(Base):
+    __tablename__ = "trigger_event_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    trigger_type = Column(String(50), nullable=False)
+    source_module = Column(String(50), nullable=False)
+    details = Column(Text, nullable=True)
+    target_system = Column(String(50), nullable=False) # XPLUS_CRM, PERAKENDE_AKADEMI, ACTION_CARD_ENGINE
+    status = Column(String(30), default="SUCCESS")
+    created_at = Column(DateTime, default=datetime.utcnow)
+
