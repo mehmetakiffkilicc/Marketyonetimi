@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Smart Retail AI - Yerel Market Zinciri Dijital Karar Destek Platformu",
   "scripts": {
-    "dev": "powershell -ExecutionPolicy Bypass -Command \".\\venv\\Scripts\\python.exe run_server.py\"",
-    "start": "powershell -ExecutionPolicy Bypass -Command \".\\venv\\Scripts\\python.exe run_server.py\"",
-    "test": "powershell -ExecutionPolicy Bypass -Command \".\\venv\\Scripts\\python.exe test_api.py\""
+    "dev": "python run_server.py",
+    "start": "python run_server.py",
+    "test": "python test_api.py"
   },
   "keywords": ["retail", "ai", "supermarket", "purchasing", "forecasting"],
   "author": "Smart Retail AI Team",
