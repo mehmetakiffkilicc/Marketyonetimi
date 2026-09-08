@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketYönetimi360 - Patron Kokpiti</title>
+    
+    <!-- Google Fonts: Instrument Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #fafaf9;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e5e5e5;
+            --accent-color: #4f46e5;
+            --accent-bg: #eef2ff;
+            --success-color: #10b981;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --danger-color: #ef4444;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --warning-color: #f59e0b;
+            --warning-bg: #fef3c7;
+            --warning-text: #92400e;
+            --sidebar-width: 260px;
+            --header-height: 64px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .layout-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--surface-color);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-header i {
+            color: var(--accent-color);
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar-nav {
+            padding: 24px 0;
+            flex: 1;
+        }
+
+        .nav-group {
+            margin-bottom: 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 24px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+            background-color: #f8fafc;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+            background-color: var(--accent-bg);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 21px; /* 24 - 3 */
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .breadcrumbs span {
+            margin: 0 8px;
+        }
+
+        .breadcrumbs .current {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 240px;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-color);
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+            background-color: var(--surface-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--accent-bg);
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Dashboard Content */
+        .content-area {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .kpi-title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .kpi-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge.positive {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .badge.negative {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+        }
+        
+        .kpi-meta-text {
+            color: var(--text-secondary);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Tables & Alerts */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th.right {
+            text-align: right;
+        }
+
+        td {
+            padding: 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td.right {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .td-muted {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* Alerts */
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .alert-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 6px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .alert-icon {
+            color: var(--warning-color);
+            margin-top: 2px;
+        }
+
+        .alert-content h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .alert-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .alert-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="layout-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group"></i> MarketYönetimi360
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Yönetim Özeti</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-tag"></i> Ticari Yönetim</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-truck-fast"></i> Tedarik Zinciri</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-store"></i> Mağaza Yönetimi</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-wallet"></i> Finans Yönetimi</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> İnsan Kaynakları</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-screwdriver-wrench"></i> Teknik Bakım</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-server"></i> Bilgi Teknolojileri</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i> Yatırım</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Risk ve Uyum</a>
+                    <a href="#" class="nav-item"><i class="fa-solid fa-link"></i> Bağlı Platformlar</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Header -->
+            <header class="header">
+                <div class="breadcrumbs">
+                    Yönetim Paneli <span>/</span> <span class="current">Patron Kokpiti</span>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Ara...">
+                    </div>
+                    
+                    <div class="user-profile">
+                        <div class="avatar">
+                            EA
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content-area">
+                
+                <!-- KPIs -->
+                <div class="kpi-grid">
+                    <div class="card kpi-card">
+                        <div class="kpi-title">Toplam Ciro</div>
+                        <div class="kpi-value">₺2.847.350</div>
+                        <div class="kpi-meta">
+                            <span class="badge positive"><i class="fa-solid fa-arrow-trend-up"></i> 12.4%</span>
+                            <span class="kpi-meta-text">geçen haftaya göre</span>
+                        </div>
+                    </div>
+                    <div class="card kpi-card">
+                        <div class="kpi-title">Brüt Kâr</div>
+                        <div class="kpi-value">₺683.364</div>
+                        <div class="kpi-meta">
+                            <span class="badge positive"><i class="fa-solid fa-arrow-trend-up"></i> 8.2%</span>
+                            <span class="kpi-meta-text">geçen haftaya göre</span>
+                        </div>
+                    </div>
+                    <div class="card kpi-card">
+                        <div class="kpi-title">Ortalama Sepet</div>
+                        <div class="kpi-value">₺187</div>
+                        <div class="kpi-meta">
+                            <span class="badge negative"><i class="fa-solid fa-arrow-trend-down"></i> 1.5%</span>
+                            <span class="kpi-meta-text">geçen haftaya göre</span>
+                        </div>
+                    </div>
+                    <div class="card kpi-card">
+                        <div class="kpi-title">Müşteri Sayısı</div>
+                        <div class="kpi-value">15.227</div>
+                        <div class="kpi-meta">
+                            <span class="badge positive"><i class="fa-solid fa-arrow-trend-up"></i> 4.1%</span>
+                            <span class="kpi-meta-text">geçen haftaya göre</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Haftalık Ciro Trendi (Son 12 Hafta)</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Şube Performans Karşılaştırması</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="storeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables & Alerts -->
+                <div class="bottom-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Kategori Bazlı Satış Performansı</div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <th class="right">Satış Hacmi (₺)</th>
+                                    <th class="right">Büyüme</th>
+                                    <th class="right">Kâr Marjı</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Taze Gıda</td>
+                                    <td class="right">845.200</td>
+                                    <td class="right td-muted">+14.2%</td>
+                                    <td class="right td-muted">22%</td>
+                                </tr>
+                                <tr>
+                                    <td>Temel Gıda</td>
+                                    <td class="right">623.850</td>
+                                    <td class="right td-muted">+5.1%</td>
+                                    <td class="right td-muted">18%</td>
+                                </tr>
+                                <tr>
+                                    <td>İçecek</td>
+                                    <td class="right">412.300</td>
+                                    <td class="right td-muted">+22.4%</td>
+                                    <td class="right td-muted">31%</td>
+                                </tr>
+                                <tr>
+                                    <td>Temizlik</td>
+                                    <td class="right">386.900</td>
+                                    <td class="right td-muted">-2.3%</td>
+                                    <td class="right td-muted">28%</td>
+                                </tr>
+                                <tr>
+                                    <td>Kişisel Bakım</td>
+                                    <td class="right">241.100</td>
+                                    <td class="right td-muted">+8.7%</td>
+                                    <td class="right td-muted">35%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Aktif Uyarılar</div>
+                        </div>
+                        <div class="alert-list">
+                            <div class="alert-item">
+                                <div class="alert-icon">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <h4>Kritik Stok Seviyesi</h4>
+                                    <p>Kadıköy Merkez şubesinde 14 temel gıda ürününde stoklar minimum seviyenin altına düştü.</p>
+                                    <div class="alert-time">2 saat önce</div>
+                                </div>
+                            </div>
+                            <div class="alert-item">
+                                <div class="alert-icon" style="color: var(--danger-color);">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <h4>Soğuk Zincir İhlali Şüphesi</h4>
+                                    <p>Lojistik Merkezi - Beşiktaş rotasındaki 34 ABC 12 plakalı araçta sıcaklık dalgalanması tespit edildi.</p>
+                                    <div class="alert-time">45 dakika önce</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Chart Configuration defaults for clean Nordic look
+        Chart.defaults.font.family = "'Instrument Sans', sans-serif";
+        Chart.defaults.color = "#64748b";
+        Chart.defaults.scale.grid.color = "#f1f5f9";
+        Chart.defaults.scale.grid.borderColor = "transparent";
+        
+        // Revenue Line Chart
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8', 'H9', 'H10', 'H11', 'H12'],
+                datasets: [{
+                    label: 'Toplam Ciro',
+                    data: [2.1, 2.2, 2.15, 2.3, 2.4, 2.35, 2.5, 2.6, 2.55, 2.7, 2.8, 2.84],
+                    borderColor: '#4f46e5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#4f46e5',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 13, weight: '600' },
+                        bodyFont: { size: 13 },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '₺' + context.parsed.y + ' Milyon';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) { return '₺' + value + 'M'; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Store Performance Bar Chart
+        const ctxStore = document.getElementById('storeChart').getContext('2d');
+        new Chart(ctxStore, {
+            type: 'bar',
+            data: {
+                labels: ['Kadıköy', 'Beşiktaş', 'Şişli', 'Üsküdar', 'Maltepe'],
+                datasets: [{
+                    label: 'Ciro',
+                    data: [850, 720, 680, 540, 490],
+                    backgroundColor: '#4f46e5',
+                    borderRadius: 4,
+                    barThickness: 24
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 13, weight: '600' },
+                        bodyFont: { size: 13 },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '₺' + context.parsed.y + ' Bin';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return value + 'K'; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

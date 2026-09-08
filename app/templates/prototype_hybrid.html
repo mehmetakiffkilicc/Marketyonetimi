@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketYönetimi360 - Hibrit Kurumsal Kokpit</title>
+    <!-- Fonts: Plus Jakarta Sans (Titanium Enterprise) + Satoshi (Midnight) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            /* Titanium kurumsal renkleri + Midnight rafine tonları */
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --text-heading: #1e293b;
+            --text-primary: #334155;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            
+            /* Accent & Brand Colors */
+            --brand-primary: #2563eb;
+            --brand-primary-light: #eff6ff;
+            --accent-violet: #6366f1;
+            --accent-violet-subtle: #f5f3ff;
+            --accent-green: #10b981;
+            --accent-green-subtle: #ecfdf5;
+            --accent-red: #ef4444;
+            --accent-red-subtle: #fef2f2;
+            --accent-yellow: #f59e0b;
+            --accent-yellow-subtle: #fffbeb;
+            --accent-copper: #b45309;
+            
+            /* Titanium Signature Steel Navy Sidebar Gradient */
+            --sidebar-grad-from: #1e3a5f;
+            --sidebar-grad-to: #0f2744;
+            --sidebar-active-bg: #2563eb;
+            
+            --font-main: 'Plus Jakarta Sans', 'Satoshi', -apple-system, sans-serif;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+            --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sidebar: Titanium Steel Navy Gradient + Midnight Refinements */
+        .sidebar {
+            width: 264px;
+            background: linear-gradient(180deg, var(--sidebar-grad-from) 0%, var(--sidebar-grad-to) 100%);
+            color: #f8fafc;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0 0 0;
+            height: 100%;
+            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(15, 39, 68, 0.12);
+        }
+
+        .sidebar-logo {
+            padding: 0 20px 18px 20px;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo i {
+            color: #60a5fa;
+            font-size: 18px;
+        }
+
+        .sidebar-logo .badge-360 {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            margin-left: 2px;
+        }
+
+        .menu-wrapper {
+            padding: 14px 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .menu-label {
+            padding: 12px 12px 6px 12px;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            margin-bottom: 6px;
+        }
+
+        .menu-items {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 9px 14px;
+            color: #cbd5e1;
+            text-decoration: none;
+            gap: 12px;
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .menu-item i {
+            width: 18px;
+            text-align: center;
+            color: #94a3b8;
+            transition: color 0.18s;
+        }
+
+        .menu-item:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .menu-item:hover i {
+            color: #60a5fa;
+        }
+
+        .menu-item.active {
+            color: #ffffff;
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .menu-item.active i {
+            color: #ffffff;
+        }
+
+        /* Titanium Signature Bottom Status Bar */
+        .status-bar {
+            background-color: rgba(0, 0, 0, 0.28);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 18px;
+            font-size: 11px;
+            color: #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #10b981;
+            display: inline-block;
+            margin-right: 5px;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .topbar {
+            height: 72px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            gap: 8px;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 13px;
+            width: 150px;
+        }
+
+        .cmd-hint {
+            font-size: 10px;
+            padding: 2px 6px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .datetime {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-profile {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-violet), #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-container {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* KPIs */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .kpi-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .kpi-title {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .kpi-trend {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        .trend-positive { 
+            color: #065f46;
+            background-color: var(--accent-green-subtle);
+        }
+        .trend-negative { 
+            color: #991b1b;
+            background-color: var(--accent-red-subtle);
+        }
+        .trend-neutral { 
+            color: #475569;
+            background-color: #f1f5f9;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .dot.violet { background-color: var(--accent-violet); }
+        .dot.green { background-color: var(--accent-green); }
+        .dot.yellow { background-color: var(--accent-yellow); }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Mini Metrics */
+        .mini-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .mini-metric-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+        }
+
+        .mini-metric-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .mini-metric-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .mini-metric-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .progress-ring {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-violet) 75%, var(--border-color) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-ring::before {
+            content: "";
+            width: 38px;
+            height: 38px;
+            background-color: var(--bg-card);
+            border-radius: 50%;
+        }
+
+        /* Alerts & Tables Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Alerts List */
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            transition: all 0.15s;
+        }
+
+        .alert-item:hover {
+            background-color: #ffffff;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .alert-content {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .alert-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar: Titanium Steel Navy Gradient + Midnight Grouping -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>marketyönetimi<span class="badge-360">360</span></span>
+        </div>
+
+        <div class="menu-wrapper">
+            <div class="menu-label">Yönetim Masası</div>
+            <ul class="menu-items">
+                <li><a href="#" class="menu-item active"><i class="fa-solid fa-gauge-high"></i> 1. Yönetim Özeti</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-cart-shopping"></i> 2. Ticari Yönetim</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-truck-fast"></i> 3. Tedarik Zinciri</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-store"></i> 4. Mağaza Yönetimi</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-sack-dollar"></i> 5. Finans Yönetimi</a></li>
+            </ul>
+
+            <div class="menu-label" style="margin-top: 14px;">Operasyon & Strateji</div>
+            <ul class="menu-items">
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-users"></i> 6. İnsan Kaynakları</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-screwdriver-wrench"></i> 7. Teknik Bakım</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-server"></i> 8. Bilgi Teknolojileri</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-building-flag"></i> 9. Yatırım & Açılış</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-shield-halved"></i> 10. Risk ve Uyum</a></li>
+                <li><a href="#" class="menu-item"><i class="fa-solid fa-link"></i> 11. Bağlı Platformlar</a></li>
+            </ul>
+        </div>
+
+        <!-- Titanium Signature Bottom Status Bar -->
+        <div class="status-bar">
+            <span><span class="status-dot"></span> Sistem Aktif</span>
+            <span style="opacity: 0.75;"><i class="fa-regular fa-clock" style="font-size: 10px;"></i> 16:55</span>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <h1 class="page-title">Kontrol Merkezi</h1>
+            
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Arama yapın...">
+                    <span class="cmd-hint">⌘ K</span>
+                </div>
+                <div class="datetime" id="current-datetime">
+                    8 Eylül 2026, 16:36
+                </div>
+                <div class="user-profile">A</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Container: Titanium Enterprise Density + Midnight Elegance -->
+        <div class="dashboard-container">
+            
+            <!-- Titanium Signature Executive Welcome Banner -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                <div>
+                    <h1 style="font-size: 26px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.6px; margin-bottom: 4px;">Günaydın, Ahmet Bey</h1>
+                    <p style="color: var(--text-secondary); font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                        <span><i class="fa-regular fa-calendar-check" style="color: var(--brand-primary); margin-right: 4px;"></i> 8 Eylül 2026, Salı</span>
+                        <span style="color: #cbd5e1;">•</span>
+                        <span><i class="fa-solid fa-cloud-sun" style="color: #f59e0b; margin-right: 4px;"></i> İstanbul, 24°C</span>
+                        <span style="color: #cbd5e1;">•</span>
+                        <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">Merkez + 5 Şube Aktif</span>
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button style="background: #ffffff; border: 1px solid var(--border-color); color: var(--text-primary); padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-subtle);">
+                        <i class="fa-solid fa-arrows-rotate" style="font-size: 12px; color: var(--text-secondary);"></i> Verileri Yenile
+                    </button>
+                    <button style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; color: #ffffff; padding: 9px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+                        <i class="fa-solid fa-file-invoice" style="font-size: 12px;"></i> Yönetim Raporu Al
+                    </button>
+                </div>
+            </div>
+
+            <!-- Titanium 3-Tier Alert Strip (Kritik, Uyarı, Bilgi) with Midnight Styling -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                <div class="card" style="padding: 14px 18px; border-left: 4px solid var(--accent-red); display: flex; align-items: center; gap: 12px; background: #fffcfc;">
+                    <div style="width: 34px; height: 34px; border-radius: 8px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <div style="font-size: 12.5px; font-weight: 700; color: #991b1b;">Kritik: Şube 3 (Beşiktaş) YGS</div>
+                        <div style="font-size: 11.5px; color: #7f1d1d; white-space: nowrap; text-overflow: ellipsis;">58.4 Gün ile hedef aşıldı (%178 sapma)</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 14px 18px; border-left: 4px solid var(--accent-yellow); display: flex; align-items: center; gap: 12px; background: #fffdfa;">
+                    <div style="width: 34px; height: 34px; border-radius: 8px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <div style="font-size: 12.5px; font-weight: 700; color: #92400e;">Uyarı: Şarküteri İade Oranı</div>
+                        <div style="font-size: 11.5px; color: #78350f; white-space: nowrap; text-overflow: ellipsis;">İade oranı %4.8 ile sektör üstünde</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 14px 18px; border-left: 4px solid var(--brand-primary); display: flex; align-items: center; gap: 12px; background: #fafcff;">
+                    <div style="width: 34px; height: 34px; border-radius: 8px; background: #dbeafe; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </div>
+                    <div style="overflow: hidden;">
+                        <div style="font-size: 12.5px; font-weight: 700; color: #1e40af;">Bilgi: Depoda Var Mağazada Yok</div>
+                        <div style="font-size: 11.5px; color: #1e3a8a; white-space: nowrap; text-overflow: ellipsis;">14 SKU raf boşluğu tespit edildi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Grid: Titanium 6 Metrik Kartı + Midnight Canlılığı (3x2 Grid) -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <!-- KPI 1: Ciro -->
+                <div class="card kpi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="kpi-title"><i class="fa-solid fa-chart-line" style="color: #2563eb;"></i> Konsolide Günlük Ciro</span>
+                        <span class="kpi-trend trend-positive"><i class="fa-solid fa-arrow-up"></i> +12.4%</span>
+                    </div>
+                    <div class="kpi-value" style="color: var(--text-heading);">₺2.847.350</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+                        <span>Hedef: ₺2.700.000</span>
+                        <span style="color: var(--accent-green); font-weight: 600;">%105.4 Gerçekleşme</span>
+                    </div>
+                </div>
+
+                <!-- KPI 2: Brüt Kâr -->
+                <div class="card kpi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="kpi-title"><i class="fa-solid fa-percent" style="color: #10b981;"></i> Brüt Kâr Marjı</span>
+                        <span class="kpi-trend trend-positive"><i class="fa-solid fa-arrow-up"></i> +1.2 puan</span>
+                    </div>
+                    <div class="kpi-value" style="color: var(--text-heading);">%24.8</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+                        <span>Brüt Kâr: ₺706.140</span>
+                        <span style="color: var(--text-secondary); font-weight: 500;">Bütçe: %24.0</span>
+                    </div>
+                </div>
+
+                <!-- KPI 3: Ortalama Sepet -->
+                <div class="card kpi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="kpi-title"><i class="fa-solid fa-basket-shopping" style="color: #6366f1;"></i> Ortalama Sepet</span>
+                        <span class="kpi-trend trend-positive"><i class="fa-solid fa-arrow-up"></i> +8.1%</span>
+                    </div>
+                    <div class="kpi-value" style="color: var(--text-heading);">₺187.40</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+                        <span>Günlük Fiş: 15.227 Adet</span>
+                        <span style="color: var(--text-secondary); font-weight: 500;">Müşteri Başı Harcama</span>
+                    </div>
+                </div>
+
+                <!-- KPI 4: GMROI -->
+                <div class="card kpi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="kpi-title"><i class="fa-solid fa-coins" style="color: #b45309;"></i> 3D GMROI (Stok Kârlılığı)</span>
+                        <span class="kpi-trend trend-positive"><i class="fa-solid fa-arrow-up"></i> +0.4x</span>
+                    </div>
+                    <div class="kpi-value" style="color: var(--text-heading);">3.42</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+                        <span>Sektör Ortalaması: 2.80</span>
+                        <span style="color: #b45309; font-weight: 700;">Yüksek Verimlilik</span>
+                    </div>
+                </div>
+
+                <!-- KPI 5: YGS Analizi -->
+                <div class="card kpi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="kpi-title"><i class="fa-solid fa-hourglass-start" style="color: #f59e0b;"></i> YGS (Stok Devir Süresi)</span>
+                        <span class="kpi-trend trend-neutral">28.4 Gün</span>
+                    </div>
+                    <div class="kpi-value" style="color: var(--text-heading);">28 Gün</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+                        <span>Hedef Eşik: 25 Gün</span>
+                        <span style="color: #d97706; font-weight: 600;">3 Gün Stok Fazlası</span>
+                    </div>
+                </div>
+
+                <!-- KPI 6: Fire / İmha Oranı -->
+                <div class="card kpi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="kpi-title"><i class="fa-solid fa-trash-can" style="color: #10b981;"></i> Fire & İmha Oranı</span>
+                        <span class="kpi-trend trend-positive"><i class="fa-solid fa-arrow-down"></i> -0.3%</span>
+                    </div>
+                    <div class="kpi-value" style="color: var(--text-heading);">%1.8</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+                        <span>Kritik Eşik: %2.2</span>
+                        <span style="color: var(--accent-green); font-weight: 700;">Güvenli Bölgede</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row: Titanium Enterprise Chart.js Visualizations -->
+            <div class="charts-grid">
+                <div class="card">
+                    <div class="chart-header">
+                        <div>
+                            <h2 class="chart-title">Son 30 Gün Konsolide Ciro Eğrisi</h2>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tüm mağazalar ve e-ticaret satış kanalları dahil</p>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <span style="font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 6px; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                <i class="fa-solid fa-arrow-trend-up"></i> Reel Büyüme: +%6.4
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="chart-header">
+                        <div>
+                            <h2 class="chart-title">Şube / Kategori Satış Hacmi</h2>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">İlk 6 lokasyon temel ürün dağılımı</p>
+                        </div>
+                        <span style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">Bin ₺</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Metrics Row: Midnight Style Progress Rings -->
+            <div class="mini-metrics">
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">Müşteri Sadakati (NPS)</span>
+                        <span class="mini-metric-value">74</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">+4 puan bu çeyrek</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(#6366f1 74%, var(--border-color) 0);"></div>
+                </div>
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">Depo Doluluk Oranı</span>
+                        <span class="mini-metric-value">%68</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">Optimal kapasite</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(#10b981 68%, var(--border-color) 0);"></div>
+                </div>
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">Tedarikçi Teslimat SLA</span>
+                        <span class="mini-metric-value">%94.2</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">Zamanında sevkiyat</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(#2563eb 94%, var(--border-color) 0);"></div>
+                </div>
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">Enerji Verimliliği</span>
+                        <span class="mini-metric-value">%82</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">Soğutucu optimizasyonu</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(#f59e0b 82%, var(--border-color) 0);"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Grid: Titanium Şube Sağlık Tablosu + Midnight Aktif Aksiyon Listesi -->
+            <div class="bottom-grid">
+                <!-- Şube Performans Tablosu -->
+                <div class="card">
+                    <div class="chart-header">
+                        <div>
+                            <h2 class="chart-title">Şube Anlık Sağlık Karnesi</h2>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Ciro, hedef tutturma ve risk durumu</p>
+                        </div>
+                        <a href="#" style="font-size: 12px; font-weight: 700; color: var(--brand-primary); text-decoration: none;">Tümünü İncele →</a>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
+                                <th style="padding: 10px 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Şube Adı</th>
+                                <th style="padding: 10px 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Bugünkü Hasılat</th>
+                                <th style="padding: 10px 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Hedef</th>
+                                <th style="padding: 10px 8px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Operasyon Durumu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 12px 8px; font-weight: 600; color: var(--text-heading);"><i class="fa-solid fa-store" style="color: var(--brand-primary); margin-right: 6px; font-size: 11px;"></i> Kadıköy Merkez</td>
+                                <td style="padding: 12px 8px; font-weight: 700;">₺684.200</td>
+                                <td style="padding: 12px 8px;"><span style="color: var(--accent-green); font-weight: 700;">%108</span></td>
+                                <td style="padding: 12px 8px;"><span style="background: #ecfdf5; color: #065f46; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 700;">● Hedef Aşıldı</span></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 12px 8px; font-weight: 600; color: var(--text-heading);"><i class="fa-solid fa-store" style="color: var(--brand-primary); margin-right: 6px; font-size: 11px;"></i> Beşiktaş Çarşı</td>
+                                <td style="padding: 12px 8px; font-weight: 700;">₺512.400</td>
+                                <td style="padding: 12px 8px;"><span style="color: var(--accent-red); font-weight: 700;">%94</span></td>
+                                <td style="padding: 12px 8px;"><span style="background: #fef2f2; color: #991b1b; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 700;">● YGS Eşiği Uyarısı</span></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 12px 8px; font-weight: 600; color: var(--text-heading);"><i class="fa-solid fa-store" style="color: var(--brand-primary); margin-right: 6px; font-size: 11px;"></i> Şişli Bomonti</td>
+                                <td style="padding: 12px 8px; font-weight: 700;">₺489.150</td>
+                                <td style="padding: 12px 8px;"><span style="color: var(--accent-green); font-weight: 700;">%104</span></td>
+                                <td style="padding: 12px 8px;"><span style="background: #ecfdf5; color: #065f46; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 700;">● Hedef Aşıldı</span></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 12px 8px; font-weight: 600; color: var(--text-heading);"><i class="fa-solid fa-store" style="color: var(--brand-primary); margin-right: 6px; font-size: 11px;"></i> Bakırköy Sahil</td>
+                                <td style="padding: 12px 8px; font-weight: 700;">₺421.800</td>
+                                <td style="padding: 12px 8px;"><span style="color: var(--text-secondary); font-weight: 700;">%101</span></td>
+                                <td style="padding: 12px 8px;"><span style="background: #f1f5f9; color: #475569; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 700;">● Normal</span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px 8px; font-weight: 600; color: var(--text-heading);"><i class="fa-solid fa-store" style="color: var(--brand-primary); margin-right: 6px; font-size: 11px;"></i> Üsküdar Meydan</td>
+                                <td style="padding: 12px 8px; font-weight: 700;">₺398.200</td>
+                                <td style="padding: 12px 8px;"><span style="color: var(--text-secondary); font-weight: 700;">%98</span></td>
+                                <td style="padding: 12px 8px;"><span style="background: #f1f5f9; color: #475569; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 700;">● Normal</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Aktif Yönetici Aksiyon Kuyruğu -->
+                <div class="card">
+                    <div class="chart-header">
+                        <div>
+                            <h2 class="chart-title">Operasyonel Aksiyon Listesi</h2>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Müdahale ve onay bekleyen bildirimler</p>
+                        </div>
+                        <span style="background: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;">3 Bekleyen</span>
+                    </div>
+                    <div class="alert-list">
+                        <div class="alert-item" style="border-left: 3px solid var(--accent-red);">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;">
+                                <i class="fa-solid fa-snowflake"></i>
+                            </div>
+                            <div class="alert-content">
+                                <span class="alert-title">Kadıköy Soğuk Hava Deposu Isı Sapması (+4.2°C)</span>
+                                <span class="alert-meta">Teknik Servis Ekipleri • 12 dakika önce bildirildi</span>
+                            </div>
+                            <button style="border: none; background: #ffffff; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">İncele</button>
+                        </div>
+
+                        <div class="alert-item" style="border-left: 3px solid var(--accent-yellow);">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;">
+                                <i class="fa-solid fa-truck-ramp-box"></i>
+                            </div>
+                            <div class="alert-content">
+                                <span class="alert-title">Merkez Depo Sütaş Sevkiyatı (18 Koli Eksik)</span>
+                                <span class="alert-meta">Satınalma & Lojistik Masası • 45 dakika önce</span>
+                            </div>
+                            <button style="border: none; background: #ffffff; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">İncele</button>
+                        </div>
+
+                        <div class="alert-item" style="border-left: 3px solid var(--brand-primary);">
+                            <div style="width: 32px; height: 32px; border-radius: 8px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;">
+                                <i class="fa-solid fa-file-signature"></i>
+                            </div>
+                            <div class="alert-content">
+                                <span class="alert-title">Eylül Tedarikçi Ödeme & Vade Takvimi Hazır</span>
+                                <span class="alert-meta">Finans Direktörlüğü • CEO Onayı Bekleniyor</span>
+                            </div>
+                            <button style="border: none; background: #2563eb; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">Onayla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Chart Configs (Light Theme)
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.font.family = "'Satoshi', 'Inter', sans-serif";
+        
+        // Gradient Area Chart
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        const gradientRev = ctxRev.createLinearGradient(0, 0, 0, 300);
+        gradientRev.addColorStop(0, 'rgba(99, 102, 241, 0.22)');
+        gradientRev.addColorStop(1, 'rgba(99, 102, 241, 0.00)');
+
+        new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 30}, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Ciro (₺)',
+                    data: Array.from({length: 30}, () => Math.floor(Math.random() * 500000) + 1500000),
+                    borderColor: '#6366f1',
+                    backgroundColor: gradientRev,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false }
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return '₺' + (value/1000000).toFixed(1) + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Stacked Bar Chart
+        const ctxCat = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCat, {
+            type: 'bar',
+            data: {
+                labels: ['Kadıköy', 'Beşiktaş', 'Şişli', 'Maltepe', 'Bakırköy', 'Üsküdar'],
+                datasets: [
+                    {
+                        label: 'Temel Gıda',
+                        data: [120, 150, 110, 90, 130, 100],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Taze Ürün',
+                        data: [80, 90, 75, 60, 85, 70],
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Kozmetik',
+                        data: [40, 50, 60, 30, 45, 35],
+                        backgroundColor: '#cbd5e1',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false, drawBorder: false }
+                    },
+                    y: {
+                        stacked: true,
+                        grid: { color: '#f1f5f9', drawBorder: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

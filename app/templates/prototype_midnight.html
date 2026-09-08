@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketYönetimi360 - Kontrol Merkezi</title>
+    <!-- Fonts -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-violet: #6366f1;
+            --accent-violet-subtle: #eef2ff;
+            --accent-green: #10b981;
+            --accent-green-subtle: #ecfdf5;
+            --accent-red: #ef4444;
+            --accent-red-subtle: #fef2f2;
+            --accent-yellow: #f59e0b;
+            --accent-yellow-subtle: #fffbeb;
+            --sidebar-active-bg: #f5f3ff;
+            --font-main: 'Satoshi', 'Inter', sans-serif;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 0;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 0 24px 24px 24px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .sidebar-logo i {
+            color: var(--accent-violet);
+        }
+
+        .menu-group {
+            margin-bottom: 24px;
+        }
+
+        .menu-label {
+            padding: 0 24px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            gap: 12px;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+            font-weight: 500;
+        }
+
+        .menu-item:hover {
+            color: var(--text-primary);
+            background-color: #f1f5f9;
+        }
+
+        .menu-item.active {
+            color: var(--accent-violet);
+            background-color: var(--sidebar-active-bg);
+            border-left-color: var(--accent-violet);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .topbar {
+            height: 72px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 12px;
+            gap: 8px;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 13px;
+            width: 150px;
+        }
+
+        .cmd-hint {
+            font-size: 10px;
+            padding: 2px 6px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .datetime {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-profile {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-violet), #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-container {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* KPIs */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .kpi-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .kpi-title {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .kpi-trend {
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        .trend-positive { 
+            color: #065f46;
+            background-color: var(--accent-green-subtle);
+        }
+        .trend-negative { 
+            color: #991b1b;
+            background-color: var(--accent-red-subtle);
+        }
+        .trend-neutral { 
+            color: #475569;
+            background-color: #f1f5f9;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .dot.violet { background-color: var(--accent-violet); }
+        .dot.green { background-color: var(--accent-green); }
+        .dot.yellow { background-color: var(--accent-yellow); }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* Mini Metrics */
+        .mini-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .mini-metric-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+        }
+
+        .mini-metric-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .mini-metric-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .mini-metric-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .progress-ring {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-violet) 75%, var(--border-color) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-ring::before {
+            content: "";
+            width: 38px;
+            height: 38px;
+            background-color: var(--bg-card);
+            border-radius: 50%;
+        }
+
+        /* Alerts & Tables Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Alerts List */
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            transition: all 0.15s;
+        }
+
+        .alert-item:hover {
+            background-color: #ffffff;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .alert-content {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .alert-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fa-solid fa-layer-group"></i> MarketYönetimi360
+        </div>
+
+        <ul class="menu-items">
+            <li><a href="#" class="menu-item active"><i class="fa-solid fa-chart-line"></i> Yönetim Özeti</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-store"></i> Ticari Yönetim</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-truck-fast"></i> Tedarik Zinciri</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-shop"></i> Mağaza Yönetimi</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-wallet"></i> Finans Yönetimi</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-users"></i> İnsan Kaynakları</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-screwdriver-wrench"></i> Teknik Bakım</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-server"></i> Bilgi Teknolojileri</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-building-columns"></i> Yatırım</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-shield-halved"></i> Risk ve Uyum</a></li>
+            <li><a href="#" class="menu-item"><i class="fa-solid fa-link"></i> Bağlı Platformlar</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <h1 class="page-title">Kontrol Merkezi</h1>
+            
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Arama yapın...">
+                    <span class="cmd-hint">⌘ K</span>
+                </div>
+                <div class="datetime" id="current-datetime">
+                    8 Eylül 2026, 16:36
+                </div>
+                <div class="user-profile">A</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="card kpi-card">
+                    <div class="kpi-title"><div class="dot violet"></div> Bugünkü Ciro</div>
+                    <div class="kpi-value">₺2.847.350</div>
+                    <div class="kpi-trend trend-positive">
+                        <i class="fa-solid fa-arrow-up-right"></i> +12.4% dünden
+                    </div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="kpi-title"><div class="dot green"></div> Haftalık Değişim</div>
+                    <div class="kpi-value">+12.4%</div>
+                    <div class="kpi-trend trend-positive">
+                        <i class="fa-solid fa-arrow-up-right"></i> Hedefin üstünde
+                    </div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="kpi-title"><div class="dot violet"></div> Aktif Şube Sayısı</div>
+                    <div class="kpi-value">6/6</div>
+                    <div class="kpi-trend trend-neutral">
+                        <i class="fa-solid fa-check"></i> Tüm şubeler operasyonel
+                    </div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="kpi-title"><div class="dot yellow"></div> Bekleyen Siparişler</div>
+                    <div class="kpi-value">23</div>
+                    <div class="kpi-trend trend-negative">
+                        <i class="fa-solid fa-arrow-up"></i> +5 son saat
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-grid">
+                <div class="card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Son 30 Gün Ciro Trendi</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Şube Bazlı Kategori Kırılımı</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Metrics Row -->
+            <div class="mini-metrics">
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">Fire Oranı</span>
+                        <span class="mini-metric-value">%2.4</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(var(--accent-red) 24%, var(--border-color) 0);"></div>
+                </div>
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">GMROI</span>
+                        <span class="mini-metric-value">2.8</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(var(--accent-green) 70%, var(--border-color) 0);"></div>
+                </div>
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">NPS (Net Promoter)</span>
+                        <span class="mini-metric-value">72</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(var(--accent-violet) 72%, var(--border-color) 0);"></div>
+                </div>
+                <div class="card mini-metric-card">
+                    <div class="mini-metric-info">
+                        <span class="mini-metric-label">YGS (Yatırım Getirisi)</span>
+                        <span class="mini-metric-value">%18.5</span>
+                    </div>
+                    <div class="progress-ring" style="background: conic-gradient(var(--accent-violet) 65%, var(--border-color) 0);"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="bottom-grid">
+                <!-- Alerts -->
+                <div class="card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Aktif Uyarılar</h2>
+                    </div>
+                    <div class="alert-list">
+                        <div class="alert-item">
+                            <div class="dot red" style="background-color: var(--accent-red); margin-top: 6px;"></div>
+                            <div class="alert-content">
+                                <span class="alert-title">Soğuk Hava Deposu Isı Artışı</span>
+                                <span class="alert-meta">Kadıköy Şube • 10 dk önce</span>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="dot yellow" style="margin-top: 6px;"></div>
+                            <div class="alert-content">
+                                <span class="alert-title">Stok Seviyesi Kritik (Taze Meyve)</span>
+                                <span class="alert-meta">Beşiktaş Şube • 45 dk önce</span>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="dot violet" style="margin-top: 6px;"></div>
+                            <div class="alert-content">
+                                <span class="alert-title">Günlük Ciro Hedefine Ulaşıldı</span>
+                                <span class="alert-meta">Şişli Şube • 2 saat önce</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Chart Configs (Light Theme)
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.font.family = "'Satoshi', 'Inter', sans-serif";
+        
+        // Gradient Area Chart
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        const gradientRev = ctxRev.createLinearGradient(0, 0, 0, 300);
+        gradientRev.addColorStop(0, 'rgba(99, 102, 241, 0.22)');
+        gradientRev.addColorStop(1, 'rgba(99, 102, 241, 0.00)');
+
+        new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 30}, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Ciro (₺)',
+                    data: Array.from({length: 30}, () => Math.floor(Math.random() * 500000) + 1500000),
+                    borderColor: '#6366f1',
+                    backgroundColor: gradientRev,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false }
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return '₺' + (value/1000000).toFixed(1) + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Stacked Bar Chart
+        const ctxCat = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCat, {
+            type: 'bar',
+            data: {
+                labels: ['Kadıköy', 'Beşiktaş', 'Şişli', 'Maltepe', 'Bakırköy', 'Üsküdar'],
+                datasets: [
+                    {
+                        label: 'Temel Gıda',
+                        data: [120, 150, 110, 90, 130, 100],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Taze Ürün',
+                        data: [80, 90, 75, 60, 85, 70],
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Kozmetik',
+                        data: [40, 50, 60, 30, 45, 35],
+                        backgroundColor: '#cbd5e1',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false, drawBorder: false }
+                    },
+                    y: {
+                        stacked: true,
+                        grid: { color: '#f1f5f9', drawBorder: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
