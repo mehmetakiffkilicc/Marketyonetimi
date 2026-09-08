@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap — MarketYönetimi360</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+
+    <div class="w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-slate-200">
+        
+        <!-- Sol Kurumsal Bilgi Paneli (Düz Koyu Zemin) -->
+        <div class="w-full md:w-5/12 p-8 lg:p-10 flex flex-col justify-between text-white" style="background-color: #0b1329;">
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
+                        <i class="fa-solid fa-layer-group text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-extrabold text-base tracking-tight text-white">marketyönetimi</span>
+                            <span class="bg-blue-500/20 text-blue-300 text-[10px] font-black px-1.5 py-0.5 rounded border border-blue-400/30">360</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Perakende İşletim Sistemi</p>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-bold leading-snug mb-3 text-white">Zincir Market Operasyonlarınızı Tek Noktadan Yönetin</h2>
+                <p class="text-xs text-slate-400 leading-relaxed">Enflasyondan arındırılmış ciro, GMROI, raf doluluğu, tedarikçi vadeleri ve 11 departman konsolide kokpiti.</p>
+
+                <div class="mt-8 space-y-3">
+                    <div class="flex items-center gap-2.5 text-xs text-slate-300">
+                        <i class="fa-solid fa-check text-blue-400"></i> Çoklu Şube & Depo Entegrasyonu
+                    </div>
+                    <div class="flex items-center gap-2.5 text-xs text-slate-300">
+                        <i class="fa-solid fa-check text-blue-400"></i> Rol Bazlı Yetkilendirme & Güvenlik
+                    </div>
+                    <div class="flex items-center gap-2.5 text-xs text-slate-300">
+                        <i class="fa-solid fa-check text-blue-400"></i> PostgreSQL Güçlü Veritabanı
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                <span>v2.4 Enterprise</span>
+                <span>© 2026 Tüm Hakları Saklıdır</span>
+            </div>
+        </div>
+
+        <!-- Sağ Giriş Formu -->
+        <div class="w-full md:w-7/12 p-8 lg:p-12 bg-white flex flex-col justify-center">
+            <div class="max-w-md mx-auto w-full">
+                
+                <div class="mb-6">
+                    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Oturum Açın</h1>
+                    <p class="text-xs text-slate-500 mt-1 font-medium">Yetkili hesabınızla MarketYönetimi360 kokpitine bağlanın.</p>
+                </div>
+
+                <!-- Hata / Bildirim Kutusu -->
+                <div id="alertBox" class="hidden mb-5 p-3.5 rounded-xl text-xs font-semibold"></div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kurumsal E-Posta</label>
+                        <div class="relative">
+                            <i class="fa-regular fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="email" id="email" required placeholder="ad.soyad@smartretail.com" value="ahmet.k@smartretail.com"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Parola</label>
+                            <a href="#" class="text-[11px] text-blue-600 font-semibold hover:underline">Şifremi Unuttum</a>
+                        </div>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="password" id="password" required placeholder="••••••••" value="demo123"
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" id="submitBtn"
+                            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                            <span>Sisteme Giriş Yap</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Hızlı Demo Giriş Butonları -->
+                <div class="mt-6 pt-5 border-t border-slate-100">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Hızlı Rol Seçimi (Test Modu)</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="fillLogin('ahmet.k@smartretail.com', 'demo123')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-left text-xs font-semibold text-slate-700 transition-all">
+                            <div class="font-bold text-blue-700 text-[11px]">Satın Almacı</div>
+                            <div class="text-[10px] text-slate-500">Ahmet Kılıç</div>
+                        </button>
+                        <button onclick="fillLogin('patron@smartretail.com', 'demo123')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-left text-xs font-semibold text-slate-700 transition-all">
+                            <div class="font-bold text-amber-700 text-[11px]">Yönetici (Patron)</div>
+                            <div class="text-[10px] text-slate-500">Patron Selim</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center text-xs text-slate-500">
+                    Hesabınız yok mu? <a href="/register" class="text-blue-600 font-bold hover:underline">Kayıt Olun</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function fillLogin(email, pwd) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = pwd;
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const alertBox = document.getElementById('alertBox');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> Kontrol ediliyor...';
+            alertBox.className = 'hidden';
+
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    alertBox.className = 'mb-5 p-3.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+                    alertBox.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Giriş başarılı! Yönlendiriliyorsunuz...';
+                    setTimeout(() => { window.location.href = '/'; }, 800);
+                } else {
+                    alertBox.className = 'mb-5 p-3.5 rounded-xl text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200';
+                    alertBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ' + (data.detail || 'Giriş başarısız.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Sisteme Giriş Yap</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+                }
+            } catch (err) {
+                alertBox.className = 'mb-5 p-3.5 rounded-xl text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200';
+                alertBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Sunucuya bağlanılamadı.';
+                btn.disabled = false;
+                btn.innerHTML = '<span>Sisteme Giriş Yap</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+            }
+        }
+    </script>
+</body>
+</html>

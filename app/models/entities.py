@@ -28,15 +28,28 @@ class POStatus(str, enum.Enum):
     COMPLETED = "COMPLETED"
     CANCELLED = "CANCELLED"
 
+class UserRole(str, enum.Enum):
+    PATRON = "PATRON"
+    GENEL_MUDUR = "GENEL_MUDUR"
+    MAGAZA_MUDURU = "MAGAZA_MUDURU"
+    SATIN_ALMACI = "SATIN_ALMACI"
+    FINANS_UZMANI = "FINANS_UZMANI"
+    DEPO_SORUMLUSU = "DEPO_SORUMLUSU"
+
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
-    role = Column(String(50), default="SATIN_ALMACI") # ADMIN, PATRON, SATIN_ALMACI, MAGAZA_MUDURU, DEPO_SORUMLUSU
+    hashed_password = Column(String(255), nullable=True) # Parola hash'i
+    role = Column(String(50), default=UserRole.SATIN_ALMACI.value)
+    is_active = Column(Boolean, default=True)
+    is_verified = Column(Boolean, default=False) # E-posta doğrulandı mı?
+    verification_token = Column(String(100), nullable=True, index=True) # Doğrulama anahtarı
     category_focus = Column(String(200), nullable=True) # Örn: "Temel Gıda, Şarküteri"
     monthly_budget_limit = Column(Float, default=500000.0) # Aylık stok bağlama bütçe limiti (TL)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     products = relationship("Product", back_populates="buyer")
     purchase_orders = relationship("PurchaseOrder", back_populates="buyer")

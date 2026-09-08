@@ -13,6 +13,7 @@ from app.api.v1.stores import router as stores_router
 from app.api.v1.crm import router as crm_router
 from app.api.v1.academy import router as academy_router
 from app.api.v1.triggers import router as triggers_router
+from app.api.v1.auth import router as auth_router
 
 # Tabloları oluştur
 Base.metadata.create_all(bind=engine)
@@ -48,6 +49,7 @@ app.include_router(stores_router, prefix=settings.API_V1_STR)
 app.include_router(crm_router, prefix=settings.API_V1_STR)
 app.include_router(academy_router, prefix=settings.API_V1_STR)
 app.include_router(triggers_router, prefix=settings.API_V1_STR)
+app.include_router(auth_router, prefix=settings.API_V1_STR)
 
 import os
 from fastapi.staticfiles import StaticFiles
@@ -59,6 +61,24 @@ if os.path.exists(static_dir):
 @app.get("/dashboard", response_class=HTMLResponse)
 def get_dashboard():
     template_path = os.path.join(os.path.dirname(__file__), "templates", "dashboard.html")
+    with open(template_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/login", response_class=HTMLResponse)
+def get_login_page():
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "login.html")
+    with open(template_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/register", response_class=HTMLResponse)
+def get_register_page():
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "register.html")
+    with open(template_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/verify-email", response_class=HTMLResponse)
+def get_verify_email_page():
+    template_path = os.path.join(os.path.dirname(__file__), "templates", "verify_email.html")
     with open(template_path, "r", encoding="utf-8") as f:
         return f.read()
 

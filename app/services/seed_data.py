@@ -36,12 +36,14 @@ def seed_database(db: Session):
 
     print("Veritabanı zengin tohumlama (seeding) başlatılıyor...")
 
-    # 1. Kullanıcılar & Satın Almacılar
+    from app.core.auth import hash_password
+    # 1. Kullanıcılar & Satın Almacılar (Varsayılan şifre: demo123)
+    default_pwd = hash_password("demo123")
     buyers = [
-        User(name="Ahmet Kılıç", email="ahmet.k@smartretail.com", role="SATIN_ALMACI", category_focus="Süt & Kahvaltılık, Temel Gıda", monthly_budget_limit=1500000.0),
-        User(name="Zeynep Turan", email="zeynep.t@smartretail.com", role="SATIN_ALMACI", category_focus="Ev Bakım & Temizlik, Kişisel Bakım", monthly_budget_limit=1200000.0),
-        User(name="Mehmet Saygın", email="mehmet.s@smartretail.com", role="SATIN_ALMACI", category_focus="Atıştırmalık, İçecek", monthly_budget_limit=1000000.0),
-        User(name="Patron Selim", email="patron@smartretail.com", role="PATRON", category_focus="Tümü", monthly_budget_limit=5000000.0),
+        User(name="Ahmet Kılıç", email="ahmet.k@smartretail.com", hashed_password=default_pwd, role="SATIN_ALMACI", is_verified=True, is_active=True, category_focus="Süt & Kahvaltılık, Temel Gıda", monthly_budget_limit=1500000.0),
+        User(name="Zeynep Turan", email="zeynep.t@smartretail.com", hashed_password=default_pwd, role="SATIN_ALMACI", is_verified=True, is_active=True, category_focus="Ev Bakım & Temizlik, Kişisel Bakım", monthly_budget_limit=1200000.0),
+        User(name="Mehmet Saygın", email="mehmet.s@smartretail.com", hashed_password=default_pwd, role="SATIN_ALMACI", is_verified=True, is_active=True, category_focus="Atıştırmalık, İçecek", monthly_budget_limit=1000000.0),
+        User(name="Patron Selim", email="patron@smartretail.com", hashed_password=default_pwd, role="PATRON", is_verified=True, is_active=True, category_focus="Tümü", monthly_budget_limit=5000000.0),
     ]
     db.add_all(buyers)
     db.flush()

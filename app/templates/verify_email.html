@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Posta Doğrulama — MarketYönetimi360</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 lg:p-10 border border-slate-200 text-center">
+        
+        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 shadow-sm">
+            <i class="fa-solid fa-envelope-circle-check"></i>
+        </div>
+
+        <h1 class="text-xl font-extrabold text-slate-900 mb-2">E-Posta Doğrulama</h1>
+        <p class="text-xs text-slate-500 mb-6 font-medium" id="statusMessage">Doğrulama anahtarınız işleniyor, lütfen bekleyiniz...</p>
+
+        <div id="resultBox" class="p-4 rounded-xl text-xs font-semibold mb-6">
+            <i class="fa-solid fa-circle-notch fa-spin text-blue-600 text-base"></i>
+        </div>
+
+        <a href="/login" class="w-full inline-block py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/25 transition-all">
+            Giriş Ekranına Git →
+        </a>
+
+    </div>
+
+    <script>
+        async function runVerification() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            const statusMsg = document.getElementById('statusMessage');
+            const resultBox = document.getElementById('resultBox');
+
+            if (!token) {
+                statusMsg.textContent = 'Doğrulama anahtarı eksik veya hatalı.';
+                resultBox.className = 'p-4 rounded-xl text-xs font-semibold mb-6 bg-rose-50 text-rose-800 border border-rose-200';
+                resultBox.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1"></i> Geçersiz doğrulama URL parametresi.';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/v1/auth/verify-email?token=' + encodeURIComponent(token));
+                const data = await res.json();
+                if (res.ok) {
+                    statusMsg.textContent = 'Hesabınız başarıyla aktifleştirildi.';
+                    resultBox.className = 'p-4 rounded-xl text-xs font-semibold mb-6 bg-emerald-50 text-emerald-800 border border-emerald-200';
+                    resultBox.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> ' + data.message;
+                } else {
+                    statusMsg.textContent = 'İşlem tamamlanamadı.';
+                    resultBox.className = 'p-4 rounded-xl text-xs font-semibold mb-6 bg-rose-50 text-rose-800 border border-rose-200';
+                    resultBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> ' + (data.detail || 'Doğrulama başarısız.');
+                }
+            } catch (err) {
+                statusMsg.textContent = 'Bağlantı hatası.';
+                resultBox.className = 'p-4 rounded-xl text-xs font-semibold mb-6 bg-rose-50 text-rose-800 border border-rose-200';
+                resultBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Sunucuya bağlanırken bir sorun oluştu.';
+            }
+        }
+        runVerification();
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketYönetimi360 — Profesyonel Tasarım Vitrini</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F8F9FA] text-[#191C1E] min-h-screen">
+    <header class="border-b border-[#E2E8F0] bg-white sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2.5">
+                    <span class="w-3 h-3 rounded-full bg-[#133E32]"></span>
+                    <h1 class="text-xl font-bold tracking-tight text-[#0F172A]">marketyönetimi<span class="text-[#133E32]">360</span></h1>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-[#F1F5F9] text-[#475569] border border-[#E2E8F0]">Design Studio</span>
+                </div>
+                <p class="text-xs text-[#64748B] mt-1">Perakende İşletim Sistemi için Şablon Klişelerinden Arındırılmış 6 Özgün Tasarım Dili</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/" class="text-xs font-semibold px-3 py-2 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#334155] border border-[#E2E8F0] transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left"></i> Mevcut Sisteme Dön
+                </a>
+                <span class="text-xs font-bold px-3 py-2 rounded-lg bg-[#133E32] text-white">
+                    6 Konsept Yayında
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+        <div class="p-6 rounded-2xl bg-white border border-[#E2E8F0] shadow-sm">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">Tasarım Felsefesi & Yol Haritası</h2>
+            <p class="text-sm text-[#334155] leading-relaxed">
+                Bu 6 tasarım konsepti, <strong>MarketYönetimi360</strong> perakende yazılımının gerçek operasyonel modülleri (Patron Kokpiti, Tedarikçi Vade Açığı, Taze Reyon Fire/Randıman, Akıllı Satınalma Workbench, Soğuk Zincir ve İcra Kurulu) üzerine inşa edilmiştir. Yapay zeka şablonlarının klişesi haline gelen mor-mavi yapışkan gradyanlar, şişkin kart gölgeleri ve gereksiz büyük harf etiketlerden tamamen arındırılmıştır.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+            <!-- KONSEPT 1 -->
+            <article class="bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm flex flex-col justify-between hover:border-[#133E32]/40 transition-all">
+                <div>
+                    <div class="relative group cursor-pointer overflow-hidden bg-[#F1F5F9]" onclick="openModal('/static/design_previews/marketyonetimi_nordic_1788872652538.jpg', '01 · Nordic Emerald: Patron Kokpiti')">
+                        <img src="/static/design_previews/marketyonetimi_nordic_1788872652538.jpg" alt="Nordic Emerald" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-2">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tam Ekran Büyüt
+                        </div>
+                        <span class="absolute top-3 left-3 bg-[#133E32] text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow">
+                            01 · Patron Kokpiti
+                        </span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-baseline justify-between">
+                            <h3 class="text-lg font-bold text-[#0F172A]">Nordic Emerald (İskandinav Editoryal)</h3>
+                            <span class="text-xs text-[#64748B]">Aydınlık / Minimal / Net</span>
+                        </div>
+                        <p class="text-xs text-[#475569] leading-relaxed">
+                            Alabaster beyazı zemin üzerinde derin ardıç zümrüdü ve 1px saç teli çizgiler. Şişkin kart gölgeleri yerine temiz tablo hiyerarşisiyle Kadıköy, Beşiktaş ve Şişli şube metriklerini gazete mizanpajı disiplininde sunar.
+                        </p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mb-2">Renk Paleti (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#F9F9F8')">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-black/10" style="background: #F9F9F8;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#F9F9F8</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#133E32')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #133E32;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#133E32</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#E7E5E4')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #E7E5E4;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#E7E5E4</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#0F172A')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #0F172A;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#0F172A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3.5 bg-[#F8FAFC] border-t border-[#E2E8F0] text-[11px] text-[#64748B] flex items-center justify-between">
+                    <span>Tipografi: <strong>Cabinet Grotesk + Inter</strong></span>
+                    <span>Modül: <strong>Patron Masası & Şubeler</strong></span>
+                </div>
+            </article>
+
+            <!-- KONSEPT 2 -->
+            <article class="bg-[#14161B] rounded-2xl border border-[#262A33] overflow-hidden shadow-sm flex flex-col justify-between hover:border-[#D4AF37]/50 transition-all text-white">
+                <div>
+                    <div class="relative group cursor-pointer overflow-hidden bg-[#0D0E12]" onclick="openModal('/static/design_previews/marketyonetimi_dark_titanium_1788872672376.jpg', '02 · Dark Titanium: Vade Açığı & Stok')">
+                        <img src="/static/design_previews/marketyonetimi_dark_titanium_1788872672376.jpg" alt="Dark Titanium" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-2">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tam Ekran Büyüt
+                        </div>
+                        <span class="absolute top-3 left-3 bg-[#D4AF37] text-black text-[11px] font-extrabold px-2.5 py-1 rounded-md shadow">
+                            02 · Finansal Stok & Vade
+                        </span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-baseline justify-between">
+                            <h3 class="text-lg font-bold text-white">Dark Titanium & Champagne Gold</h3>
+                            <span class="text-xs text-[#94A3B8]">Karanlık / Finansal / Yüksek Prestij</span>
+                        </div>
+                        <p class="text-xs text-[#94A3B8] leading-relaxed">
+                            Mat obsidiyen titanyum zemin, fırçalanmış şampanya altını vurgular. Sütaş, Eti Gıda ve Unilever tedarikçi vade açıklarını (-41 gün), atıl stok maliyetini (498 bin TL) ve sermaye yükünü parlamasız, elit bir terminal diliyle sunar.
+                        </p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-2">Renk Paleti (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#333842] bg-[#1C1F26] cursor-pointer" onclick="copyHex('#14161B')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #14161B;"></span>
+                                    <span class="text-[11px] font-mono text-[#CBD5E1]">#14161B</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#333842] bg-[#1C1F26] cursor-pointer" onclick="copyHex('#D4AF37')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #D4AF37;"></span>
+                                    <span class="text-[11px] font-mono text-[#CBD5E1]">#D4AF37</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#333842] bg-[#1C1F26] cursor-pointer" onclick="copyHex('#38BDF8')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #38BDF8;"></span>
+                                    <span class="text-[11px] font-mono text-[#CBD5E1]">#38BDF8</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#333842] bg-[#1C1F26] cursor-pointer" onclick="copyHex('#F1F5F9')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #F1F5F9;"></span>
+                                    <span class="text-[11px] font-mono text-[#CBD5E1]">#F1F5F9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3.5 bg-[#0F1115] border-t border-[#262A33] text-[11px] text-[#94A3B8] flex items-center justify-between">
+                    <span>Tipografi: <strong>Plus Jakarta Sans + JetBrains Mono</strong></span>
+                    <span>Modül: <strong>Vade Açığı & Finans Masası</strong></span>
+                </div>
+            </article>
+
+            <!-- KONSEPT 3 -->
+            <article class="bg-[#F7F5F0] rounded-2xl border border-[#E5E0D5] overflow-hidden shadow-sm flex flex-col justify-between hover:border-[#2E4A3D]/40 transition-all">
+                <div>
+                    <div class="relative group cursor-pointer overflow-hidden bg-[#EDE8DC]" onclick="openModal('/static/design_previews/marketyonetimi_mediterranean_1788872699734.jpg', '03 · Mediterranean Olive: Taze Reyonlar & Fire')">
+                        <img src="/static/design_previews/marketyonetimi_mediterranean_1788872699734.jpg" alt="Mediterranean Olive" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-2">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tam Ekran Büyüt
+                        </div>
+                        <span class="absolute top-3 left-3 bg-[#2E4A3D] text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow">
+                            03 · Taze Reyon & Fire
+                        </span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-baseline justify-between">
+                            <h3 class="text-lg font-bold text-[#1F2922]">Mediterranean Olive & Terracotta</h3>
+                            <span class="text-xs text-[#5C6E61]">Sıcak / Doğal / Gurme Market</span>
+                        </div>
+                        <p class="text-xs text-[#425046] leading-relaxed">
+                            Sıcak keten kağıdı dokusu, zeytin yeşili ve pişmiş terakota aksanları. Meyve-sebze marjı (%28.4), günlük fire oranı (%1.8) ve karkas et randımanı (%72.0) gibi gıda perakendeciliğinin yaşayan ruhunu zarafetle taşır.
+                        </p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#8A9C8F] block mb-2">Renk Paleti (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#D5CFC2] bg-white cursor-pointer" onclick="copyHex('#F7F5F0')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #F7F5F0;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#F7F5F0</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#D5CFC2] bg-white cursor-pointer" onclick="copyHex('#2E4A3D')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #2E4A3D;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#2E4A3D</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#D5CFC2] bg-white cursor-pointer" onclick="copyHex('#BA5338')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #BA5338;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#BA5338</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#D5CFC2] bg-white cursor-pointer" onclick="copyHex('#1F2922')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #1F2922;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#1F2922</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3.5 bg-[#EFECE3] border-t border-[#E5E0D5] text-[11px] text-[#5C6E61] flex items-center justify-between">
+                    <span>Tipografi: <strong>Instrument Serif + Inter</strong></span>
+                    <span>Modül: <strong>Manav, Kasap, Fire & İmha</strong></span>
+                </div>
+            </article>
+
+            <!-- KONSEPT 4 -->
+            <article class="bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm flex flex-col justify-between hover:border-[#0F2942]/40 transition-all">
+                <div>
+                    <div class="relative group cursor-pointer overflow-hidden bg-[#F1F5F9]" onclick="openModal('/static/design_previews/marketyonetimi_swiss_purchasing_1788872724389.jpg', '04 · Swiss Grid: Akıllı Satınalma Workbench')">
+                        <img src="/static/design_previews/marketyonetimi_swiss_purchasing_1788872724389.jpg" alt="Swiss Grid Purchasing" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-2">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tam Ekran Büyüt
+                        </div>
+                        <span class="absolute top-3 left-3 bg-[#0F2942] text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow">
+                            04 · Satınalma Workbench
+                        </span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-baseline justify-between">
+                            <h3 class="text-lg font-bold text-[#0F172A]">Swiss Grid Purchasing Workbench</h3>
+                            <span class="text-xs text-[#64748B]">Sıfır Radius / Jilet Tablo / Disiplin</span>
+                        </div>
+                        <p class="text-xs text-[#475569] leading-relaxed">
+                            Prusya mavisi başlıklar, keskin cetvel sınırları, sıfır yuvarlatılmış kart karmaşası. Satınalmacının doğrudan odaklandığı geçmiş 3 ay satış, gelecek 3 ay yapay zeka tahmini, depo stoğu ve önerilen sipariş adetleri.
+                        </p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8] block mb-2">Renk Paleti (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#F8F9FA')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #F8F9FA;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#F8F9FA</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#0F2942')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #0F2942;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#0F2942</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#2563EB')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #2563EB;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#2563EB</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#E2E8F0] bg-white cursor-pointer" onclick="copyHex('#E2E8F0')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #E2E8F0;"></span>
+                                    <span class="text-[11px] font-mono text-[#334155]">#E2E8F0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3.5 bg-[#F8FAFC] border-t border-[#E2E8F0] text-[11px] text-[#64748B] flex items-center justify-between">
+                    <span>Tipografi: <strong>Geist Sans + Space Mono</strong></span>
+                    <span>Modül: <strong>Akıllı Satın Alma Masası</strong></span>
+                </div>
+            </article>
+
+            <!-- KONSEPT 5 -->
+            <article class="bg-[#18212B] rounded-2xl border border-[#2A3747] overflow-hidden shadow-sm flex flex-col justify-between hover:border-[#38BDF8]/40 transition-all text-white">
+                <div>
+                    <div class="relative group cursor-pointer overflow-hidden bg-[#10171F]" onclick="openModal('/static/design_previews/cold_chain_logistics_ui_1788872452601.jpg', '05 · Cold-Chain Logistics: Soğuk Hava & İkmal')">
+                        <img src="/static/design_previews/cold_chain_logistics_ui_1788872452601.jpg" alt="Cold Chain Logistics" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-2">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tam Ekran Büyüt
+                        </div>
+                        <span class="absolute top-3 left-3 bg-[#38BDF8] text-[#0F172A] text-[11px] font-extrabold px-2.5 py-1 rounded-md shadow">
+                            05 · Soğuk Zincir & Lojistik
+                        </span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-baseline justify-between">
+                            <h3 class="text-lg font-bold text-white">Cold-Chain Logistics Ledger</h3>
+                            <span class="text-xs text-[#94A3B8]">Karanlık / Endüstriyel / Depo Hızı</span>
+                        </div>
+                        <p class="text-xs text-[#94A3B8] leading-relaxed">
+                            -22°C soğuk hava depoları, günlük şube ikmal hatları ve termal alarmlar. Buzul mavisi ve mercan kırmızısı durum göstergeleriyle depo-mağaza uyuşmazlıklarını ve yoldaki sevkiyatları sıfır gölge karmaşasıyla listeler.
+                        </p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block mb-2">Renk Paleti (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#334155] bg-[#222D3A] cursor-pointer" onclick="copyHex('#18212B')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #18212B;"></span>
+                                    <span class="text-[11px] font-mono text-[#E2E8F0]">#18212B</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#334155] bg-[#222D3A] cursor-pointer" onclick="copyHex('#38BDF8')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #38BDF8;"></span>
+                                    <span class="text-[11px] font-mono text-[#E2E8F0]">#38BDF8</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#334155] bg-[#222D3A] cursor-pointer" onclick="copyHex('#FB7185')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #FB7185;"></span>
+                                    <span class="text-[11px] font-mono text-[#E2E8F0]">#FB7185</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#334155] bg-[#222D3A] cursor-pointer" onclick="copyHex('#F1F5F9')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #F1F5F9;"></span>
+                                    <span class="text-[11px] font-mono text-[#E2E8F0]">#F1F5F9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3.5 bg-[#121A22] border-t border-[#2A3747] text-[11px] text-[#94A3B8] flex items-center justify-between">
+                    <span>Tipografi: <strong>Space Grotesk + Inter</strong></span>
+                    <span>Modül: <strong>Tedarik Zinciri & Depo İkmal</strong></span>
+                </div>
+            </article>
+
+            <!-- KONSEPT 6 -->
+            <article class="bg-[#121316] rounded-2xl border border-[#252830] overflow-hidden shadow-sm flex flex-col justify-between hover:border-[#C5A880]/40 transition-all text-white">
+                <div>
+                    <div class="relative group cursor-pointer overflow-hidden bg-[#0C0D0E]" onclick="openModal('/static/design_previews/executive_broadsheet_dark_1788872573227.jpg', '06 · Executive Broadsheet: İcra Kurulu & Toplantılar')">
+                        <img src="/static/design_previews/executive_broadsheet_dark_1788872573227.jpg" alt="Executive Broadsheet" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-2">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tam Ekran Büyüt
+                        </div>
+                        <span class="absolute top-3 left-3 bg-[#C5A880] text-black text-[11px] font-extrabold px-2.5 py-1 rounded-md shadow">
+                            06 · İcra Kurulu Tutanağı
+                        </span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-baseline justify-between">
+                            <h3 class="text-lg font-bold text-white">Executive Council Broadsheet</h3>
+                            <span class="text-xs text-[#A89F91]">Resmi / Tutanak / Stratejik</span>
+                        </div>
+                        <p class="text-xs text-[#A89F91] leading-relaxed">
+                            Resmi icra kurulu toplantıları, haftalık karar özetleri ve 4 çeyreklik (Q1-Q4) BSC hedefleri. Döküm demir paneller ve pirinç metalik aksanlarla yönetim kurulu seviyesinde ağırbaşlı bir mizanpaj sunar.
+                        </p>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#6B655A] block mb-2">Renk Paleti (HEX)</span>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#363A45] bg-[#1A1C22] cursor-pointer" onclick="copyHex('#121316')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #121316;"></span>
+                                    <span class="text-[11px] font-mono text-[#DCD6CD]">#121316</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#363A45] bg-[#1A1C22] cursor-pointer" onclick="copyHex('#C5A880')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #C5A880;"></span>
+                                    <span class="text-[11px] font-mono text-[#DCD6CD]">#C5A880</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#363A45] bg-[#1A1C22] cursor-pointer" onclick="copyHex('#EDE8E1')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #EDE8E1;"></span>
+                                    <span class="text-[11px] font-mono text-[#DCD6CD]">#EDE8E1</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 px-2 py-1 rounded border border-[#363A45] bg-[#1A1C22] cursor-pointer" onclick="copyHex('#2A2D35')">
+                                    <span class="w-3.5 h-3.5 rounded-full" style="background: #2A2D35;"></span>
+                                    <span class="text-[11px] font-mono text-[#DCD6CD]">#2A2D35</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-3.5 bg-[#0B0C0E] border-t border-[#252830] text-[11px] text-[#A89F91] flex items-center justify-between">
+                    <span>Tipografi: <strong>Newsreader (Serif) + Satoshi</strong></span>
+                    <span>Modül: <strong>Toplantılar, İcra Kurulu, BSC</strong></span>
+                </div>
+            </article>
+
+        </div>
+
+        <div class="p-8 rounded-2xl bg-white border border-[#E2E8F0] text-center space-y-3 shadow-sm">
+            <h3 class="text-base font-bold text-[#0F172A]">Hangi Tasarım Dilini Sisteme İşleyelim?</h3>
+            <p class="text-xs text-[#64748B] max-w-2xl mx-auto leading-relaxed">
+                İster tek bir konsepti ana tema olarak seçebilir, ister <em>"Patron Masası 02 Koyu Titanyum olsun, Satınalma ekranı 04 Swiss Grid olsun"</em> şeklinde hibrit bir karar verebilirsiniz.
+            </p>
+        </div>
+    </main>
+
+    <!-- Modal Lightbox -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm" onclick="closeModal()">
+        <div class="max-w-6xl w-full bg-[#111] rounded-2xl overflow-hidden border border-white/10 p-3 relative" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between pb-3 border-b border-white/10 px-2">
+                <span id="modalTitle" class="text-sm font-bold text-white"></span>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2 py-1">&#10005;</button>
+            </div>
+            <div class="mt-3 max-h-[80vh] overflow-auto flex items-center justify-center">
+                <img id="modalImg" src="" alt="" class="w-full h-auto max-h-[75vh] object-contain rounded-lg">
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-6 right-6 bg-[#0F172A] text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg border border-slate-700 opacity-0 transition-opacity pointer-events-none z-50">
+        HEX Kodu Kopyalandı!
+    </div>
+
+    <script>
+        function openModal(src, title) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+        function copyHex(hex) {
+            navigator.clipboard.writeText(hex);
+            const toast = document.getElementById('toast');
+            toast.innerText = hex + ' kopyalandı!';
+            toast.classList.remove('opacity-0');
+            setTimeout(() => toast.classList.add('opacity-0'), 2000);
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
